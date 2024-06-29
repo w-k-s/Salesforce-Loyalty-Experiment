@@ -1,10 +1,13 @@
-const { v4: uuidv4 } = require('uuid');
-const express = require('express')
-const jsforce = require('jsforce')
-const grpc = require("@grpc/grpc-js");
-const fs = require("fs");
-const avro = require("avro-js");
-const protoLoader = require("@grpc/proto-loader");
+import dotenv from 'dotenv';
+dotenv.config();
+
+import { v4 as uuidv4 } from 'uuid';
+import express from 'express';
+import jsforce from 'jsforce';
+import grpc from '@grpc/grpc-js';
+import fs from 'fs';
+import avro from 'avro-js';
+import protoLoader from '@grpc/proto-loader';
 
 const packageDef = protoLoader.loadSync("sf.proto", {});
 const grpcObj = grpc.loadPackageDefinition(packageDef);
@@ -15,6 +18,10 @@ const SALESFORCE_PASSWORD = `${process.env.SF_PASSWORD}${process.env.SF_SECURITY
 
 const app = express()
 const port = 3000
+
+import transactionRoutes from './api/transactions/index.js'
+
+app.use('/api/v1/txn', transactionRoutes)
 
 const connectToGrpc = async () => {
   const conn = new jsforce.Connection();
@@ -88,37 +95,6 @@ const connectToGrpc = async () => {
     console.log("status ==> ", status);
   });
 }
-
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-app.get('/api/v1/txn', async (req,res) => {
-    try{
-        var conn = new jsforce.Connection();
-        
-        const userInfo = await conn.login(SALESFORCE_USERNAME, SALESFORCE_PASSWORD);
-        console.log("userInfo", userInfo);
-
-        // Query Salesforce
-        const result = await conn.sobject("Order").create({ 
-            AccountId:'0018d00000joJXIAA2',
-            BillToContactId: '0038d00000k2lX9AAI',
-            ShipToContactId: '0038d00000k2lX9AAI',
-            //TotalAmount: 10.10,
-            EffectiveDate: new Date(),
-            OrderReferenceNumber:  uuidv4(),
-            Description: 'Number',
-            Status: 'Draft'
-        });
-        console.log(result);
-        
-        // Send the result back to the client
-        res.json(result.records);
-    }catch(e){
-        console.error(e);
-    }
-})
 
 
 connectToGrpc()
