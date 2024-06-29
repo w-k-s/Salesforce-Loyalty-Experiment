@@ -8,6 +8,7 @@ import grpc from '@grpc/grpc-js';
 import fs from 'fs';
 import avro from 'avro-js';
 import protoLoader from '@grpc/proto-loader';
+import routes from './routes.js'
 
 const packageDef = protoLoader.loadSync("sf.proto", {});
 const grpcObj = grpc.loadPackageDefinition(packageDef);
@@ -19,9 +20,7 @@ const SALESFORCE_PASSWORD = `${process.env.SF_PASSWORD}${process.env.SF_SECURITY
 const app = express()
 const port = 3000
 
-import transactionRoutes from './api/transactions/index.js'
-
-app.use('/api/v1/txn', transactionRoutes)
+routes(app)
 
 const connectToGrpc = async () => {
   const conn = new jsforce.Connection();
