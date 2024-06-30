@@ -13,9 +13,7 @@ const packageDef = protoLoader.loadSync("sf.proto", {});
 const grpcObj = grpc.loadPackageDefinition(packageDef);
 const sfdcPackage = grpcObj.eventbus.v1;
 
-const salesforceConnection = new jsforce.Connection();
-const salesforceUser = await salesforceLogin(
-  salesforceConnection,
+const salesforceConnection = await salesforceLogin(
   SALESFORCE_USERNAME, 
   SALESFORCE_PASSWORD, 
   SALESFORCE_SECURITY_TOKEN
@@ -27,12 +25,12 @@ const port = 3000
 routes(app, salesforceConnection)
 
 const connectToGrpc = async () => {
-  const orgId = salesforceUser.organizationId;
+  const salesforceIdentity = await salesforceConnection.identity()
   const metaCallback = (_params, callback) => {
     const meta = new grpc.Metadata();
     meta.add("accesstoken", salesforceConnection.accessToken);
     meta.add("instanceurl", salesforceConnection.instanceUrl);
-    meta.add("tenantid", orgId);
+    meta.add("tenantid", salesforceIdentity.organization_id);
     callback(null, meta);
   };
   

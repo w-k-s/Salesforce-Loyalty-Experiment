@@ -9,7 +9,9 @@
 ## Pending Questions
 
 - [x] How to inject Salesforce connection?
+- [x] How to manage connection lifecycle ([Refresh Handler](https://jsforce.github.io/document/#session-refresh-handler))
 - [ ] How best to structure the salesforce subscription?
+
 
 ## Useful Resource
 
