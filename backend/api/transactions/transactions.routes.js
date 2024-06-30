@@ -1,7 +1,11 @@
 import express from 'express';
-import {create} from './transactions.handlers.js';
+import handlers from './transactions.handlers.js';
 
-const transactionRoutes = express.Router()
-transactionRoutes.post('/', create);
-
-export default transactionRoutes;
+export default ({salesforceConnection}) => {
+    const transanctionHandlers = handlers({salesforceConnection})
+    
+    const transactionRoutes = express.Router()
+    transactionRoutes.post('/', transanctionHandlers.create);
+    
+    return transactionRoutes
+}

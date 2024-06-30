@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import { v4 as uuidv4 } from 'uuid';
 import express from 'express';
 import jsforce from 'jsforce';
@@ -9,27 +6,32 @@ import fs from 'fs';
 import avro from 'avro-js';
 import protoLoader from '@grpc/proto-loader';
 import routes from './routes.js'
+import { SALESFORCE_USERNAME, SALESFORCE_PASSWORD, SALESFORCE_SECURITY_TOKEN } from './utils/config.js';
+import { salesforceLogin } from './utils/salesforce.js';
 
 const packageDef = protoLoader.loadSync("sf.proto", {});
 const grpcObj = grpc.loadPackageDefinition(packageDef);
 const sfdcPackage = grpcObj.eventbus.v1;
 
-const SALESFORCE_USERNAME = `${process.env.SF_USERNAME}`
-const SALESFORCE_PASSWORD = `${process.env.SF_PASSWORD}${process.env.SF_SECURITY_TOKEN}`
+const salesforceConnection = new jsforce.Connection();
+const salesforceUser = await salesforceLogin(
+  salesforceConnection,
+  SALESFORCE_USERNAME, 
+  SALESFORCE_PASSWORD, 
+  SALESFORCE_SECURITY_TOKEN
+)
 
 const app = express()
 const port = 3000
 
-routes(app)
+routes(app, salesforceConnection)
 
 const connectToGrpc = async () => {
-  const conn = new jsforce.Connection();
-  const connectionResult = await conn.login(SALESFORCE_USERNAME, SALESFORCE_PASSWORD);
-  const orgId = connectionResult.organizationId;
+  const orgId = salesforceUser.organizationId;
   const metaCallback = (_params, callback) => {
     const meta = new grpc.Metadata();
-    meta.add("accesstoken", conn.accessToken);
-    meta.add("instanceurl", conn.instanceUrl);
+    meta.add("accesstoken", salesforceConnection.accessToken);
+    meta.add("instanceurl", salesforceConnection.instanceUrl);
     meta.add("tenantid", orgId);
     callback(null, meta);
   };

@@ -8,11 +8,11 @@
 
 ## Pending Questions
 
-- [ ] How to inject Salesforce connection?
+- [x] How to inject Salesforce connection?
 - [ ] How best to structure the salesforce subscription?
-- [ ] Documentation for `numRequested`?
 
 ## Useful Resource
 
 - [Salesforce Pub/Sub](https://jungleeforce.com/2021/11/11/connecting-to-salesforce-using-pub-sub-api-grpc/)
 - [ExpressJS Folder Structure](https://www.codemzy.com/blog/nodejs-file-folder-structure)
+- [Someone else's approach](https://salesforce.stackexchange.com/questions/380092/change-data-capture-event-retrieving-values-for-all-fields)
