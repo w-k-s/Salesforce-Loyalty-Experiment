@@ -37,10 +37,10 @@ export async function salesforceLogin(
     return salesforceConnection
 }
 
-export async function salesforcePubSubClient({
+export async function createSalesforcePubSubClient(
     salesforceConnection,
     protoFile
-}){
+){
     const packageDef = protoLoader.loadSync(protoFile, {});
     const grpcObj = grpc.loadPackageDefinition(packageDef);
     const sfdcPackage = grpcObj.eventbus.v1;
@@ -66,42 +66,48 @@ export async function salesforcePubSubClient({
     );
 }
 
-class AutorenewingSubscription extends EventEmitter{
-
-    static async create(pubsubClient, topicName) {
-        const schemaId = await new Promise((resolve, reject) => {
-            pubsubClient.GetTopic({ topicName: topicName }, (error, res) => {
-                if(error) {
-                    reject(error)
-                }else {
-                    resolve(res.schemaId)
-                }
+export async function subscribe(pubsubClient, topicName) {
+    const schemaId = await new Promise((resolve, reject) => {
+        pubsubClient.GetTopic({ topicName: topicName }, (error, res) => {
+            if(error) {
+                reject(error)
+            }else {
+                resolve(res.schemaId)
             }
-        )});
+        }
+    )});
 
-        const schema = await new Promise((resolve, reject) => {
-            client.GetSchema({ schemaId: schemaId }, (error, res) => {
-                if(error) {
-                    reject(error)
-                }else {
-                    resolve(avro.parse(res.schemaJson))
-                }
+    const schema = await new Promise((resolve, reject) => {
+        pubsubClient.GetSchema({ schemaId: schemaId }, (error, res) => {
+            if(error) {
+                reject(error)
+            }else {
+                resolve(avro.parse(res.schemaJson))
             }
-        )});
+        }
+    )});
 
-        const subscription = client.Subscribe();
-        subscription.on("data", (data) => {
-            console.log("data => ", data);
-            data.events.map((anEvent) => dataFn(schema.fromBuffer(anEvent.event.payload)));
-        });
-        subscription.on("end", ()=>{
-            subscription.write({
-                topicName: topicName,
-                numRequested: 10,
-            })
-        });
-        subscription.on("error", (err) => this.emit('error', err));
-        subscription.on("status", (status) => this.emit('status', status));
-        return subscription;
-    }
+    const emitter = new EventEmitter();
+    const subscription = pubsubClient.Subscribe();
+    subscription.write({
+        topicName: topicName,
+        numRequested: 1,
+    })
+    subscription.on("data", (data) => {
+        console.log(`Subscription to Topic: '${topicName}'. Data: '${JSON.stringify(data)}'.`)
+        data.events.map((anEvent) => emitter.emit('data',schema.fromBuffer(anEvent.event.payload)));
+    });
+    subscription.on("end", ()=>{
+        console.log(`Subscription to Topic: '${topicName}'. Ended.`)
+        emitter.emit('end')
+    });
+    subscription.on("error", (err) => {
+        console.log(`Subscription to Topic: '${topicName}'. Error: '${JSON.stringify(err)}'.`)
+        emitter.emit('error', err)
+    });
+    subscription.on("status", (status) => {
+        console.log(`Subscription to Topic: '${topicName}'. Status: '${JSON.stringify(status)}'.`)
+        emitter.emit('status', status)
+    });
+    return emitter;
 }
