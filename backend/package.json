@@ -19,6 +19,7 @@
     "express": "^4.19.2",
     "jsforce": "^3.2.1",
     "prettier": "^3.3.2",
+    "salesforce-pubsub-api-client": "^4.1.0",
     "uuid": "^10.0.0"
   }
 }

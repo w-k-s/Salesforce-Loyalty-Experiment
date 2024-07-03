@@ -1,9 +1,48 @@
-import { subscribe } from './utils/salesforce.js'
+import PubSubApiClient from 'salesforce-pubsub-api-client';
+import { onTransactionCreated, onTransactionUpdated } from './transactions/transactions.service.js';
 
-export default async (salesforcePubSubClient) => {
 
-    const transactionSubscription = await subscribe(salesforcePubSubClient, '/event/Order_Event__e');
-    transactionSubscription.on('data', (data) => console.log(`Event => ${JSON.stringify(data)}`));
-    transactionSubscription.on('error', (err) => console.log(`Error => ${JSON.stringify(err)}`));
-    transactionSubscription.on('status', (status) => console.log(`Status => ${JSON.stringify(status)}`));
+export default async (salesforceConnection) => {
+
+    try{
+        const identity = await salesforceConnection.identity()
+        const client = new PubSubApiClient();
+            await client.connectWithAuth(salesforceConnection.accessToken, salesforceConnection.instanceUrl, identity.organization_id);
+
+            // Subscribe to account change events
+            const eventEmitter = await client.subscribe(
+                '/data/OrderChangeEvent'
+            );
+
+            // Handle incoming events
+            eventEmitter.on('data', (event) => {
+                console.log(
+                    `Handling ${event.payload.ChangeEventHeader.entityName} change event ` +
+                        `with ID ${event.replayId} ` +
+                        `on channel ${eventEmitter.getTopicName()} ` +
+                        `(${eventEmitter.getReceivedEventCount()}/${eventEmitter.getRequestedEventCount()} ` +
+                        `events received so far)`
+                );
+                
+                const { payload } = event 
+                const { ChangeEventHeader: {changeType}} = payload
+                const transaction = {
+                    id: payload.ChangeEventHeader.recordIds[0],
+                    orderNumber: payload.OrderNumber,
+                    description: payload.Description,
+                    totalAmount: payload.TotalAmount,
+                    createdDate: payload.CreatedDate,
+                    effectiveDate: payload.EffectiveDate,
+                    status: payload.Status
+                }
+
+                if(changeType === "CREATE"){
+                    onTransactionCreated(transaction)
+                }else if(changeType === "UPDATE"){
+                    onTransactionUpdated(transaction)
+                }
+            });
+    } catch (error) {
+        console.error(error);
+    }
 }  
