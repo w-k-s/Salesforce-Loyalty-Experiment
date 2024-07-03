@@ -18,9 +18,9 @@ export async function salesforceLogin(
                 if (!conn.accessToken) {
                     throw new Error('Access token not found after login');
                 }
-            
+
                 console.log("Token refreshed")
-            
+
                 // 1st arg can be an `Error` or null if successful
                 // 2nd arg should be the valid access token
                 callback(null, conn.accessToken);

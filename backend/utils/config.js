@@ -8,7 +8,7 @@ const SALESFORCE_PASSWORD = process.env.SALESFORCE_PASSWORD
 const SALESFORCE_TOKEN = process.env.SALESFORCE_TOKEN
 
 export const salesforceConnection = await salesforceLogin(
-    SALESFORCE_USERNAME, 
-    SALESFORCE_PASSWORD, 
+    SALESFORCE_USERNAME,
+    SALESFORCE_PASSWORD,
     SALESFORCE_TOKEN
 )
