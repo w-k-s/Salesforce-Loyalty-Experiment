@@ -1,6 +1,8 @@
-import { createTransaction } from './transactions.service.js';
+import transactionService from './transactions.service.js';
 
-export default ({ salesforceConnection }) => {
+export default ({ salesforceConnection, db }) => {
+  const { createTransaction } = transactionService({ salesforceConnection, db })
+
   return {
     create: async (req, res) => {
       try {
