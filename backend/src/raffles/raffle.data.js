@@ -1,21 +1,24 @@
 export default (db) => {
     const tableName = 'raffle_transactions'
     const findRaffleTicketsForTransaction = async (transactionId) => {
-        return db.select('id', 'raffle_name', 'transaction_id', 'transaction_amount', 'tickets', 'customer_id')
+        const result = await db.select('id', 'raffle_name', 'transaction_id', 'transaction_amount', 'tickets', 'customer_id')
             .from(tableName)
             .where('transaction_id', transactionId)
             .limit(1)
-            .map((entity) => {
-                return {
-                    id: entity.id,
-                    raffleName: entity.raffle_name,
-                    transactionId: entity.transaction_id,
-                    transactionAmount: entity.transaction_amount,
-                    tickets: entity.tickets,
-                    customerId: entity.customer_id
-                }
-            })
-            .first()
+
+        if (result.length == 0) {
+            return null
+        }
+
+        const entity = result[0];
+        return {
+            id: entity.id,
+            raffleName: entity.raffle_name,
+            transactionId: entity.transaction_id,
+            transactionAmount: entity.transaction_amount,
+            tickets: entity.tickets,
+            customerId: entity.customer_id,
+        };
     }
 
     const saveRaffleTransaction = async (raffleTransactions) => {
