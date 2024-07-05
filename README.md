@@ -21,7 +21,7 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [x] 5. Use CDC instead of Platform Events
 - [ ] 6. Setup DB connectivity
 - [ ] 7. Setup request/response, model classes to make the code clearer (Should I migrate to TypeScript?)
-- [ ] 8. Authenticated API 
+- [ ] 8. Sign-up, Login, Authenticate Transaction API 
 
 ## Useful Resource
 

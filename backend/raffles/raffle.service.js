@@ -6,49 +6,53 @@ const RAFFLE_NAME = "Win an iPhone"
 
 export default (db) => {
     const { findRaffleTicketsForTransaction, saveRaffleTransaction, updateRaffleTransaction } = raffleDao(db);
-    return {
-        issueRaffleTickets: async (transaction) => {
-            // For the sake of this PoC:
-            // - Imaginine raffle tickets are awarded from monday -> saturday during the first and third week of each month.
-            // - A raffle ticket is issued for every $10 spent on a transaction
-            // - The draw happens on sunday of the first and third week of each month. No raffle tickets are issued on draw day.
-            try {
-                // Calculate the number of raffle tickets to award.
-                const ticketsToAward = Math.floor(transaction.totalAmount / RAFFLE_TICKET_PRICE);
 
-                // Check if the transaction has already been awarded raffle tickets
-                const raffleTransaction = await findRaffleTicketsForTransaction({ transactionId: transaction.id })
+    const issueRaffleTickets = async (transaction) => {
+        // For the sake of this PoC:
+        // - Imaginine raffle tickets are awarded from monday -> saturday during the first and third week of each month.
+        // - A raffle ticket is issued for every $10 spent on a transaction
+        // - The draw happens on sunday of the first and third week of each month. No raffle tickets are issued on draw day.
+        try {
+            // Calculate the number of raffle tickets to award.
+            const ticketsToAward = Math.floor(transaction.totalAmount / RAFFLE_TICKET_PRICE);
 
-                // If the transaction has not been awarded raffle tickets, award them.
-                if (!raffleTransaction) {
-                    if (ticketsToAward == 0 || !isRaffleTicketDay()) {
-                        console.log(`0 raffles awarded to Transaction '${transaction.id}' with totalAmount '${transaction.totalAmount}'`)
-                        return null;
-                    }
+            // Check if the transaction has already been awarded raffle tickets
+            const raffleTransaction = await findRaffleTicketsForTransaction({ transactionId: transaction.id })
 
-                    return await saveRaffleTransaction({
-                        id: uuidv4(),
-                        raffleName: RAFFLE_NAME,
-                        transactionAmount: transaction.totalAmount,
-                        tickets: ticketsToAward,
-                        customerId: transaction.contactId,
-                    })
-
+            // If the transaction has not been awarded raffle tickets, award them.
+            if (!raffleTransaction) {
+                if (ticketsToAward == 0 || !isRaffleTicketDay()) {
+                    console.log(`0 raffles awarded to Transaction '${transaction.id}' with totalAmount '${transaction.totalAmount}'`)
+                    return null;
                 }
 
-                // If the amount of the transaction has been updated, also update the amount of raffle tickets.
-                if (raffleTransaction.transactionAmount !== transaction.totalAmount) {
-                    return await updateRaffleTransaction({
-                        ...raffleTransaction,
-                        tickets: ticketsToAward,
-                        transactionAmount: transaction.totalAmount
-                    })
-                }
+                return await saveRaffleTransaction({
+                    id: uuidv4(),
+                    raffleName: RAFFLE_NAME,
+                    transactionId: transaction.id,
+                    transactionAmount: transaction.totalAmount,
+                    tickets: ticketsToAward,
+                    customerId: transaction.contactId,
+                })
 
-            } catch (e) {
-                console.error(e);
             }
+
+            // If the amount of the transaction has been updated, also update the amount of raffle tickets.
+            if (raffleTransaction.transactionAmount !== transaction.totalAmount) {
+                return await updateRaffleTransaction({
+                    ...raffleTransaction,
+                    tickets: ticketsToAward,
+                    transactionAmount: transaction.totalAmount
+                })
+            }
+
+        } catch (e) {
+            console.error(e);
         }
+    }
+
+    return {
+        issueRaffleTickets,
     }
 }
 
