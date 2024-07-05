@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { salesforceLogin } from './salesforce.js';
+import knex from 'knex'
 
 dotenv.config();
 
@@ -20,7 +21,7 @@ const DB_USERNAME = process.env.DB_USERNAME
 const DB_PASSWORD = process.env.DB_PASSWORD
 const DB_NAME = process.env.DB_NAME || 'loyalty'
 
-export const knex = require('knex')({
+export const db = knex({
     client: DB_CLIENT,
     connection: {
         host: DB_HOST,

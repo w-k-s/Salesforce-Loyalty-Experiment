@@ -1,8 +1,4 @@
 import jsforce from 'jsforce';
-import grpc from '@grpc/grpc-js';
-import avro from 'avro-js';
-import protoLoader from '@grpc/proto-loader';
-import EventEmitter from 'events';
 
 export async function salesforceLogin(
     username,
