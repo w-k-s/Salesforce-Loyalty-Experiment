@@ -21,23 +21,21 @@ export default (db) => {
         };
     }
 
-    const saveRaffleTransaction = async (raffleTransactions) => {
-        raffleEntities = raffleTransactions.map((raffleTransaction) => {
-            return {
-                id: raffleTransaction.id,
-                raffle_name: raffleTransaction.raffleName,
-                transaction_id: raffleTransaction.transactionId,
-                transaction_amount: raffleTransaction.transactionAmount,
-                tickets: raffleTransaction.tickets,
-                customer_id: raffleTransaction.customerId
-            }
-        })
+    const saveRaffleTransaction = async (raffleTransaction) => {
+        const raffleEntity = {
+            id: raffleTransaction.id,
+            raffle_name: raffleTransaction.raffleName,
+            transaction_id: raffleTransaction.transactionId,
+            transaction_amount: raffleTransaction.transactionAmount,
+            tickets: raffleTransaction.tickets,
+            customer_id: raffleTransaction.customerId
+        }
 
-        return db.insert(raffleEntities).into(tableName)
+        return await db.insert(raffleEntity).into(tableName)
     }
 
     const updateRaffleTransaction = async (raffleTransaction) => {
-        db(tableName).where('id', '=', raffleTransaction.id).update({
+        await db(tableName).where('id', '=', raffleTransaction.id).update({
             transaction_amount: raffleTransaction.transactionAmount,
             tickets: raffleTransaction.tickets,
         });

@@ -3,8 +3,8 @@
  * @returns { Promise<void> }
  */
 exports.up = function (knex) {
-    return knex.schema.createTable('raffle_tickets', (table) => {
-        table.increments('id').primary();
+    return knex.schema.createTable('raffle_transactions', (table) => {
+        table.uuid('id').primary();
         table.string('raffle_name').notNullable();
         table.string('transaction_id').notNullable();
         table.decimal('transaction_amount', 10, 2).notNullable();
@@ -18,5 +18,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-    return knex.schema.dropTable('raffle_tickets');
+    return knex.schema.dropTable('raffle_transactions');
 };

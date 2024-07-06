@@ -24,6 +24,7 @@ export default ({ salesforceConnection, db }) => {
                 PricebookEntryId: '01u8d00000EkE6zAAF'
             })
 
+            return id;
         } catch (e) {
             console.error(e);
         }

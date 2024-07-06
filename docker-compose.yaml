@@ -14,9 +14,10 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: password
       DB_NAME: loyalty
+    env_file:
+      - backend/.env
     depends_on:
       - postgres
-    command: sh -c "npm install && npm run migrate && npm start"
 
   postgres:
     image: postgres:13

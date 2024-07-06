@@ -35,6 +35,7 @@ export default async ({ salesforceConnection, db }) => {
                 totalAmount: payload.TotalAmount,
                 createdDate: payload.CreatedDate,
                 effectiveDate: payload.EffectiveDate,
+                contactId: payload.BillToContactId,
                 status: payload.Status
             }
 

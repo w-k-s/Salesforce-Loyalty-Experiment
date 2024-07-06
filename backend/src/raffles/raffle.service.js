@@ -22,17 +22,18 @@ export default (db) => {
             // If the transaction has not been awarded raffle tickets, award them.
             if (!raffleTransaction) {
                 if (ticketsToAward == 0 || !isRaffleTicketDay()) {
-                    console.log(`0 raffles awarded to Transaction '${transaction.id}' with totalAmount '${transaction.totalAmount}'`)
+                    console.log(`0 raffles awarded to Transaction '${transaction.id}' with totalAmount '${transaction.totalAmount}'.`)
                     return null;
                 }
 
+                console.log(`${ticketsToAward} raffles awarded to Transaction '${transaction.id}' with totalAmount '${transaction.totalAmount}'.`)
                 return await saveRaffleTransaction({
                     id: uuidv4(),
                     raffleName: RAFFLE_NAME,
                     transactionId: transaction.id,
                     transactionAmount: transaction.totalAmount,
                     tickets: ticketsToAward,
-                    customerId: transaction.contactId,
+                    customerId: transaction.contactId || "10",
                 })
 
             }

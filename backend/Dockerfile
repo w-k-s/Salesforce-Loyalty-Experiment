@@ -19,7 +19,7 @@ COPY . .
 EXPOSE 3000
 
 # Define the command to run the app
-CMD ["npm", "start"]
+ENTRYPOINT ["./entrypoint.sh"]
 
 # Health check to ensure the container is running
 #HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
