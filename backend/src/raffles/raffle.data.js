@@ -1,7 +1,7 @@
 export default (db) => {
-    const tableName = 'raffle_transactions'
+    const tableName = 'raffle_tickets'
     const findRaffleTicketsForTransaction = async (transactionId) => {
-        const result = await db.select('id', 'raffle_name', 'transaction_id', 'transaction_amount', 'tickets', 'customer_id')
+        const result = await db.select('id', 'raffle_name', 'transaction_id', 'transaction_amount', 'tickets', 'customer_id', 'created_date', 'modified_date')
             .from(tableName)
             .where('transaction_id', transactionId)
             .limit(1)
@@ -18,6 +18,8 @@ export default (db) => {
             transactionAmount: entity.transaction_amount,
             tickets: entity.tickets,
             customerId: entity.customer_id,
+            createdDate: entity.created_date,
+            modifiedDate: entity.modified_date,
         };
     }
 
@@ -28,7 +30,9 @@ export default (db) => {
             transaction_id: raffleTransaction.transactionId,
             transaction_amount: raffleTransaction.transactionAmount,
             tickets: raffleTransaction.tickets,
-            customer_id: raffleTransaction.customerId
+            customer_id: raffleTransaction.customerId,
+            created_date: Date.now(),
+            modified_date: Date.now(),
         }
 
         return await db.insert(raffleEntity).into(tableName)
@@ -38,6 +42,7 @@ export default (db) => {
         await db(tableName).where('id', '=', raffleTransaction.id).update({
             transaction_amount: raffleTransaction.transactionAmount,
             tickets: raffleTransaction.tickets,
+            modified_date: Date.now(),
         });
     }
 

@@ -16,5 +16,6 @@ export default {
     migrations: {
       directory: './migrations',
     },
+    debug: true
   }
 };

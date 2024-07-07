@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
+import transactionDao from './transactions.data.js'
 import raffleService from '../raffles/raffle.service.js';
 
 export default ({ salesforceConnection, db }) => {
+    const { saveTransaction, updateTransaction, findTransactionById } = transactionDao(db)
     const { issueRaffleTickets } = raffleService(db)
 
     const createTransaction = async () => {
@@ -30,16 +32,18 @@ export default ({ salesforceConnection, db }) => {
         }
     }
 
-    const onTransactionCreated = (transaction) => {
+    const onTransactionCreated = async (transaction) => {
         console.log(`Transaction: ${JSON.stringify(transaction)}`)
-        // TODO: Update transaction in table?
-        issueRaffleTickets(transaction)
+        _ = await saveTransaction(transaction);
+        issueRaffleTickets(transaction);
     }
 
-    const onTransactionUpdated = (transaction) => {
+    const onTransactionUpdated = async (transaction) => {
         console.log(`Transaction: ${JSON.stringify(transaction)}`)
-        // TODO: Update transaction in table?
-        issueRaffleTickets(transaction)
+        _ = await updateTransaction(transaction);
+        const transaction = await findTransactionById(transaction.id)
+
+        issueRaffleTickets(transaction);
     }
 
     return {

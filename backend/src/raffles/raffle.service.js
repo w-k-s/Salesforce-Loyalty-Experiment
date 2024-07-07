@@ -33,7 +33,7 @@ export default (db) => {
                     transactionId: transaction.id,
                     transactionAmount: transaction.totalAmount,
                     tickets: ticketsToAward,
-                    customerId: transaction.contactId || "10",
+                    customerId: transaction.contactId,
                 })
 
             }

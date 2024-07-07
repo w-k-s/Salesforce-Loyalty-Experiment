@@ -17,7 +17,7 @@ export default async ({ salesforceConnection, db }) => {
         );
 
         // Handle incoming events
-        eventEmitter.on('data', (event) => {
+        eventEmitter.on('data', async (event) => {
             console.log(
                 `Handling ${event.payload.ChangeEventHeader.entityName} change event ` +
                 `with ID ${event.replayId} ` +
@@ -33,16 +33,17 @@ export default async ({ salesforceConnection, db }) => {
                 orderNumber: payload.OrderNumber,
                 description: payload.Description,
                 totalAmount: payload.TotalAmount,
-                createdDate: payload.CreatedDate,
                 effectiveDate: payload.EffectiveDate,
-                contactId: payload.BillToContactId,
-                status: payload.Status
+                customerId: payload.BillToContactId,
+                status: payload.Status,
+                createdDate: payload.CreatedDate,
+                modifiedDate: payload.LastModifiedDate
             }
 
             if (changeType === "CREATE") {
-                onTransactionCreated(transaction)
+                await onTransactionCreated(transaction)
             } else if (changeType === "UPDATE") {
-                onTransactionUpdated(transaction)
+                await onTransactionUpdated(transaction)
             }
         });
     } catch (error) {

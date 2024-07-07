@@ -5,5 +5,5 @@
 ### Create Migration File
 
 ```
-npx knex migrate:make create_raffles_table --esm
+npx knex migrate:make create_raffles_table 
 ```
