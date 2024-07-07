@@ -5,7 +5,7 @@ export default ({ salesforceConnection, db }) => {
 
   const create = async (req, res) => {
     try {
-      const result = await createTransaction({ salesforceConnection });
+      const result = await createTransaction({ transaction: req.body });
       res.status(201).json({ Id: result });
     } catch (e) {
       console.error(e);

@@ -20,7 +20,7 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [x] 4. Autorenew PubSub Subscription
 - [x] 5. Use CDC instead of Platform Events
 - [x] 6. Setup DB connectivity
-- [ ] 7. Setup request/response, model classes to make the code clearer (Should I migrate to TypeScript?)
+- [x] 7. Validate request, model classes to make the code clearer? Should I migrate to TypeScript?
 - [ ] 8. Sign-up, Login, Authenticate Transaction API 
 - [ ] 9. Sort out out-of-order events.
 
@@ -28,3 +28,4 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 
 - [Salesforce Pub/Sub](https://jungleeforce.com/2021/11/11/connecting-to-salesforce-using-pub-sub-api-grpc/)
 - [ExpressJS Folder Structure](https://www.codemzy.com/blog/nodejs-file-folder-structure)
+- [Express Validator](https://stackoverflow.com/a/70637527/821110). Another [example](https://stackoverflow.com/a/60592312/821110) using Joi
