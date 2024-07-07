@@ -33,13 +33,15 @@ export default async ({ salesforceConnection, db }) => {
                 orderNumber: payload.OrderNumber,
                 description: payload.Description,
                 totalAmount: payload.TotalAmount,
-                effectiveDate: payload.EffectiveDate,
+                effectiveDate: new Date(payload.EffectiveDate),
                 customerId: payload.BillToContactId,
                 status: payload.Status,
-                createdDate: payload.CreatedDate,
-                modifiedDate: payload.LastModifiedDate
+                createdDate: new Date(payload.CreatedDate),
+                modifiedDate: new Date(payload.LastModifiedDate)
             }
 
+            // TODO: Update usually comes before create. Will fix later.
+            console.log(`${changeType} Transaction ${transaction.id}: '${JSON.stringify(transaction, null, 2)}'`)
             if (changeType === "CREATE") {
                 await onTransactionCreated(transaction)
             } else if (changeType === "UPDATE") {

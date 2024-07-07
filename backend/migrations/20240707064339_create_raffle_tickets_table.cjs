@@ -12,6 +12,8 @@ exports.up = function (knex) {
         table.string('customer_id').notNullable();
         table.timestamp('created_date', { useTz: true }).notNullable;
         table.timestamp('modified_date', { useTz: true }).notNullable;
+        table.foreign('transaction_id', 'fk_raffle_tickets_transaction_id')
+            .references('transactions.id')
     });
 };
 

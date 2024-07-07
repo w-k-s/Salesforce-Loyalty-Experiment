@@ -8,7 +8,7 @@ exports.up = function (knex) {
         table.string('order_number').notNullable();
         table.string('description').notNullable();
         table.decimal('total_amount', 10, 2).notNullable();
-        table.date('effective_date').notNullable();
+        table.timestamp('effective_date', { useTz: true }).notNullable();
         table.string('customer_id').notNullable();
         table.string('status').notNullable();
         table.timestamp('created_date', { useTz: true }).notNullable;

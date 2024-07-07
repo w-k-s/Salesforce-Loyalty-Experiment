@@ -19,6 +19,7 @@ export default (db) => {
             // Check if the transaction has already been awarded raffle tickets
             const raffleTransaction = await findRaffleTicketsForTransaction({ transactionId: transaction.id })
 
+            console.log(`Transaction: ${transaction.id}. Amount: ${transaction.totalAmount}. Tickets To Award: ${ticketsToAward}. Tickets Awarded: ${raffleTransaction === null}`)
             // If the transaction has not been awarded raffle tickets, award them.
             if (!raffleTransaction) {
                 if (ticketsToAward == 0 || !isRaffleTicketDay()) {
@@ -33,7 +34,7 @@ export default (db) => {
                     transactionId: transaction.id,
                     transactionAmount: transaction.totalAmount,
                     tickets: ticketsToAward,
-                    customerId: transaction.contactId,
+                    customerId: transaction.customerId,
                 })
 
             }
@@ -62,7 +63,7 @@ const isRaffleTicketDay = () => {
     const isRaffleWeek = weekNumber % 2 != 0; // If the week is odd, it's probably the 1st/3rd week of a month
     const isDrawDay = new Date().getDay() == 0; // Draw day is sunday
 
-    return isRaffleWeek && !isDrawDay
+    return true//isRaffleWeek && !isDrawDay
 }
 
 const getWeekNumber = (date = new Date()) => {

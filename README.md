@@ -19,9 +19,10 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [x] 3. Issue raffle tickets when a transaction is done. 
 - [x] 4. Autorenew PubSub Subscription
 - [x] 5. Use CDC instead of Platform Events
-- [ ] 6. Setup DB connectivity
+- [x] 6. Setup DB connectivity
 - [ ] 7. Setup request/response, model classes to make the code clearer (Should I migrate to TypeScript?)
 - [ ] 8. Sign-up, Login, Authenticate Transaction API 
+- [ ] 9. Sort out out-of-order events.
 
 ## Useful Resource
 

@@ -32,18 +32,17 @@ export default ({ salesforceConnection, db }) => {
         }
     }
 
-    const onTransactionCreated = async (transaction) => {
-        console.log(`Transaction: ${JSON.stringify(transaction)}`)
-        _ = await saveTransaction(transaction);
-        issueRaffleTickets(transaction);
+    const onTransactionCreated = async (event) => {
+        await saveTransaction(event);
+        issueRaffleTickets(event);
     }
 
-    const onTransactionUpdated = async (transaction) => {
-        console.log(`Transaction: ${JSON.stringify(transaction)}`)
-        _ = await updateTransaction(transaction);
-        const transaction = await findTransactionById(transaction.id)
-
-        issueRaffleTickets(transaction);
+    const onTransactionUpdated = async (event) => {
+        await updateTransaction(event);
+        const transaction = await findTransactionById(event.id)
+        if (transaction) {
+            issueRaffleTickets(transaction);
+        }
     }
 
     return {

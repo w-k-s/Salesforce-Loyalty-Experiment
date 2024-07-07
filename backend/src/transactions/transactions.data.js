@@ -42,7 +42,7 @@ export default (db) => {
 
     const updateTransaction = async (transaction) => {
         await db(tableName).where('id', '=', transaction.id).update({
-            transaction_amount: transaction.totalAmount,
+            total_amount: transaction.totalAmount,
             modified_date: transaction.modifiedDate,
         });
     }

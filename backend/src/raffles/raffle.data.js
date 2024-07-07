@@ -31,8 +31,8 @@ export default (db) => {
             transaction_amount: raffleTransaction.transactionAmount,
             tickets: raffleTransaction.tickets,
             customer_id: raffleTransaction.customerId,
-            created_date: Date.now(),
-            modified_date: Date.now(),
+            created_date: new Date(),
+            modified_date: new Date(),
         }
 
         return await db.insert(raffleEntity).into(tableName)
@@ -42,7 +42,7 @@ export default (db) => {
         await db(tableName).where('id', '=', raffleTransaction.id).update({
             transaction_amount: raffleTransaction.transactionAmount,
             tickets: raffleTransaction.tickets,
-            modified_date: Date.now(),
+            modified_date: new Date(),
         });
     }
 
