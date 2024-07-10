@@ -29,3 +29,4 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [Salesforce Pub/Sub](https://jungleeforce.com/2021/11/11/connecting-to-salesforce-using-pub-sub-api-grpc/)
 - [ExpressJS Folder Structure](https://www.codemzy.com/blog/nodejs-file-folder-structure)
 - [Express Validator](https://stackoverflow.com/a/70637527/821110). Another [example](https://stackoverflow.com/a/60592312/821110) using Joi
+- [Express Openid](https://medium.com/keycloak/keycloak-express-openid-client-fabea857f11f)
