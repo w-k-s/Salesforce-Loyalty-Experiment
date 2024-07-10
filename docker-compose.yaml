@@ -20,7 +20,7 @@ services:
       - postgres
 
   postgres:
-    image: postgres:13
+    image: postgres:15
     container_name: postgres
     environment:
       POSTGRES_USER: postgres
@@ -28,3 +28,26 @@ services:
       POSTGRES_DB: loyalty
     ports:
       - "5432:5432"
+
+  authdb:
+    image: postgres:15
+    container_name: authdb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: keycloak
+    ports:
+      - "5434:5432"
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.1
+    container_name: keycloak
+    ports:
+    - 8080:8080
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: ["start-dev","--db","postgres","--db-url","jdbc:postgresql://authdb:5432/keycloak","--db-username","postgres","--db-password","password"]
+    depends_on:
+      - authdb
+
