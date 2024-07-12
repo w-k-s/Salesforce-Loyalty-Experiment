@@ -1,10 +1,8 @@
 import PubSubApiClient from 'salesforce-pubsub-api-client';
-import transactionService from './transactions/transactions.service.js';
 
+export default async ({ transactionService }) => {
 
-export default async ({ salesforceConnection, db }) => {
-
-    const { onTransactionCreated, onTransactionUpdated } = transactionService({ salesforceConnection, db })
+    const { onTransactionCreated, onTransactionUpdated } = transactionService
 
     try {
         const identity = await salesforceConnection.identity()

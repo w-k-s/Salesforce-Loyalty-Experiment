@@ -1,5 +1,7 @@
+import memberRoutes from './member/member.routes.js'
 import transactionRoutes from './transactions/index.js'
 
-export default ({ app, salesforceConnection, db }) => {
-    app.use('/api/v1/txn', transactionRoutes({ salesforceConnection, db }))
+export default ({ app, transactionService, memberService }) => {
+    app.use('/api/v1/txn', transactionRoutes(transactionService))
+    app.use('api/v1/register', memberRoutes(memberService))
 }

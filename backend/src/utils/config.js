@@ -31,3 +31,10 @@ export const db = knex({
         database: DB_NAME,
     },
 });
+
+export const authentication = {
+    baseUrl: process.env.AUTH_BASE_URL,
+    userRealm: process.env.AUTH_USER_REALM,
+    adminClientId: process.env.AUTH_ADMIN_CLIENT_ID,
+    adminClientSecret: process.env.AUTH_ADMIN_CLIENT_SECRET
+};

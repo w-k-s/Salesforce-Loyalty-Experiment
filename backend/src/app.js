@@ -1,11 +1,17 @@
 import express from 'express';
 import routes from './routes.js'
 import subscriptions from './subscriptions.js'
-import { salesforceConnection, db } from './utils/config.js'
+import { salesforceConnection, db, authentication } from './utils/config.js'
 import bodyParser from 'body-parser';
 import { auth } from 'express-openid-connect'
 
+import TransactionService from './transactions.service.js';
+import MemberService from './member/member.service.js';
+import AuthenticationService from './auth/auth.service.js'
 
+const transactionService = TransactionService({ salesforceConnection, db })
+const memberService = MemberService({ salesforceConnection, authenticationService })
+const authenticationService = AuthenticationService(authentication)
 
 const app = express()
 const port = 3000
@@ -23,8 +29,12 @@ app.use(
 
 app.use(bodyParser.json())
 
-routes({ app, salesforceConnection, db })
-subscriptions({ salesforceConnection, db })
+routes({
+  app,
+  transactionService,
+  memberService,
+})
+subscriptions({ transactionService })
 
 app.listen(port, () => {
   console.log(`Loyalty Backend listening on port ${port}`)
