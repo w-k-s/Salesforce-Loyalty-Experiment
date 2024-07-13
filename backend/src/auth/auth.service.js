@@ -1,5 +1,3 @@
-import client from "jsforce/lib/browser/client";
-
 /**
  * Creates an Authentication Service
  * @param {object} authConfig Authentication Configuration
@@ -21,14 +19,23 @@ export default ({
             return token
         }
 
-        let formData = new FormData();
-        formData.append('grant_type', 'client_credentials');
-        formData.append('client_id', adminClientId);
-        formData.append('client_secret', adminClientSecret);
+        var form = {
+            'grant_type': 'client_credentials',
+            'client_id': adminClientId,
+            'client_secret': adminClientSecret
+        }
+        var formBody = [];
+        for (var key in form) {
+            var encodedKey = encodeURIComponent(key);
+            var encodedValue = encodeURIComponent(form[key]);
+            formBody.push(encodedKey + "=" + encodedValue);
+        }
+        formBody = formBody.join("&");
+
 
         const { access_token: accessToken } = await fetch(`${baseUrl}/auth/realms/master/protocol/openid-connect/token`, {
             method: 'post',
-            body: new FormData(formData),
+            body: formBody,
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -48,17 +55,20 @@ export default ({
      */
     const createUser = async (user) => {
         const token = await getAdminToken()
-        fetch(`${baseUrl}/auth/admin/realms/${userRealm}/users`, {
+        console.log(`${baseUrl}/auth/admin/realms/${userRealm}/users`)
+        const result = await fetch(`${baseUrl}/admin/realms/${userRealm}/users`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/josn'
+                'Content-Type': 'application/json'
             },
+            method: 'post',
             body: JSON.stringify({
                 ...user,
                 emailVerified: false,
                 emabled: false
             })
         })
+        console.log(result)
     }
 
     return {

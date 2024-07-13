@@ -1,6 +1,6 @@
 import PubSubApiClient from 'salesforce-pubsub-api-client';
 
-export default async ({ transactionService }) => {
+export default async ({ salesforceConnection, transactionService }) => {
 
     const { onTransactionCreated, onTransactionUpdated } = transactionService
 

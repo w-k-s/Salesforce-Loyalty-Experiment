@@ -1,21 +1,29 @@
-export default ({ salesforceConnection, authService }) => {
+export default ({ salesforceConnection, authenticationService }) => {
+
+    const pretendCache = {}
 
     const registerMember = async ({ request }) => {
+        const cacheKey = `registration:${request.email}`
         try {
             // Create Contact in Salesforce
-            const { id } = await salesforceConnection.sobject("Contact").create({
-                FirstName: request.firstName,
-                MiddleName: request.middleName,
-                LastName: request.lastName,
-                Birthdate: request.birthDate,
-                Email: request.email,
-                GenderIdentity: request.gender,
-                MobilePhone: request.mobileNumber
-            });
+            let id = pretendCache[cacheKey];
+            if (!id) {
+                const { id: salesforceId } = await salesforceConnection.sobject("Contact").create({
+                    FirstName: request.firstName,
+                    MiddleName: request.middleName,
+                    LastName: request.lastName,
+                    Birthdate: request.birthDate,
+                    Email: request.email,
+                    //GenderIdentity: request.gender,
+                    MobilePhone: request.mobileNumber
+                });
+                id = salesforceId
+                pretendCache[cacheKey] = salesforceId
+            }
 
             console.log(`Member '${request.email}' registered with id '${id}'`)
             // Register User on Keycloak (sends OTP over SMS)
-            await authService.createUser({
+            await authenticationService.createUser({
                 ...request,
                 id: id,
             })

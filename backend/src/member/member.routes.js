@@ -7,7 +7,7 @@ export default (memberService) => {
     const memberHandlers = handlers(memberService)
 
     const memberRoutes = express.Router()
-    memberRoutes.post('', validate(createMemberSchema), memberHandlers.create);
+    memberRoutes.post('/register', validate(createMemberSchema), memberHandlers.create);
 
     return memberRoutes
 }
