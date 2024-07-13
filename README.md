@@ -2,15 +2,16 @@
 
 ## Introduction
 
-A proof of concept of an event-driven architecture wherein Salesforce Loyalty Management is the source of truth for the customers loyalty transactions, loyalty points, loyalty tier (e.t.c) and events from Salesforce can be used to build features around loyalty (e.g. awarding raffle tickets)
+A proof of concept of an loyalty backend wherein Salesforce Loyalty Management is the source of truth for the customers loyalty transactions, loyalty points, loyalty tier (e.t.c) and events from Salesforce can be used to build features around loyalty (e.g. awarding raffle tickets)
 
 The purpose of this project is to:
-- Demonstrate Event Driven Architecture where Salesforce is the Event source
-- Demonstrate that building loyalty functionality powered by Salesforce but outside of Salesforce flows is more flexible, faster to develop, can be reviewed in PRs, can be tested end-to-end more thoroughly, loosely coupled and more conducive to a headless microservice architecture.
+- Evaluate NodeJS libraries for Salesforce vs. propietary solutions e.g. Mulesoft
+- Demonstrate and Evaluate NodeJS libraries for building an Event Driven Architecture where Salesforce is the Event source
+- Demonstrating building loyalty functionality powered by Salesforce but outside of Salesforce (and Mulesoft flows) is more flexible to change, faster to develop, can be validated in PRs, can be tested end-to-end more thoroughly, loosely coupled and more conducive to a headless microservice architecture.
 
 The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intention would be to intgerate Salesforce Loyalty Management. To be more precise, I've used `Order`, `OrderItem` in `Salesforce Sales Cloud` in place of `TransactionJournal`, `Product`, `ProductLineItem` in Salesforce Loyalty.
 
-**Note**: We're using Salesforce events to replicate the transaction history in a relational database store. The idea behind this is that reading and persisting transactions from the DB rather than Salesforce would reduce the number of queries, and the amount of data that needs to be stored in Salesforce which might be a more cost-effective use of a Salesforce License. In practice, this could get a little hairy e.g. if events are missed or processed twice.
+**Note**: We're using Salesforce events to replicate the transaction history in a relational database store. The idea behind this is to own our own data (rather than rely on a SaaS product for storage). It might also reduce the number of queries to Salesforce resulting in an overall more cost-effective use of a their License. In practice, this could get a little hairy e.g. if events are missed or processed twice.
 
 ## To Do
 
