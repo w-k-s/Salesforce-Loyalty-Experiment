@@ -15,33 +15,42 @@ export default ({
 
     let token = null
     const getAdminToken = async () => {
+        // supposed to be a cache access
         if (token) {
             return token
         }
 
-        var form = {
-            'grant_type': 'client_credentials',
-            'client_id': adminClientId,
-            'client_secret': adminClientSecret
+        try {
+            let form = {
+                'grant_type': 'client_credentials',
+                'client_id': adminClientId,
+                'client_secret': adminClientSecret
+            }
+            let formBody = [];
+            for (var key in form) {
+                var encodedKey = encodeURIComponent(key);
+                var encodedValue = encodeURIComponent(form[key]);
+                formBody.push(encodedKey + "=" + encodedValue);
+            }
+            formBody = formBody.join("&");
+            const response = await fetch(`${baseUrl}/realms/master/protocol/openid-connect/token`, {
+                method: 'post',
+                body: formBody,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+            });
+            if (!response.ok) {
+                const error = await response.json()
+                throw new Error(error);
+            }
+            const { access_token: accessToken } = await response.json()
+            token = accessToken
+            return accessToken
+        } catch (error) {
+            console.error('Failed to acquire admin token:', error);
         }
-        var formBody = [];
-        for (var key in form) {
-            var encodedKey = encodeURIComponent(key);
-            var encodedValue = encodeURIComponent(form[key]);
-            formBody.push(encodedKey + "=" + encodedValue);
-        }
-        formBody = formBody.join("&");
-
-
-        const { access_token: accessToken } = await fetch(`${baseUrl}/auth/realms/master/protocol/openid-connect/token`, {
-            method: 'post',
-            body: formBody,
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-        });
-        token = accessToken
     }
 
     /**
@@ -54,21 +63,36 @@ export default ({
      * @param {string} user.mobileNumber User's phone number
      */
     const createUser = async (user) => {
-        const token = await getAdminToken()
-        console.log(`${baseUrl}/auth/admin/realms/${userRealm}/users`)
-        const result = await fetch(`${baseUrl}/admin/realms/${userRealm}/users`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            method: 'post',
-            body: JSON.stringify({
-                ...user,
-                emailVerified: false,
-                emabled: false
+        try {
+            const token = await getAdminToken()
+            const response = await fetch(`${baseUrl}/admin/realms/${userRealm}/users`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                method: 'post',
+                body: JSON.stringify({
+
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    emailVerified: false,
+                    enabled: false,
+                    attributes: {
+                        contactId: user.id,
+                        mobileNumber: user.mobileNumber,
+                    }
+                })
             })
-        })
-        console.log(result)
+            if (!response.ok) {
+                const error = await response.json()
+                throw new Error(JSON.stringify(error));
+            }
+            const json = await response.json()
+            console.log(json)
+        } catch (error) {
+            console.error('Failed to create user on keycloak:', error);
+        }
     }
 
     return {
