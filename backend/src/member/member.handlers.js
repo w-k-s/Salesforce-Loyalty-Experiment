@@ -1,5 +1,5 @@
 export default (memberService) => {
-  const { registerMember } = memberService
+  const { registerMember, findMemberById } = memberService
 
   const create = async (req, res) => {
     try {
@@ -11,7 +11,19 @@ export default (memberService) => {
     }
   }
 
+  const getById = async (req, res) => {
+    try {
+      const contactId = req.params.id
+      const result = await findMemberById(contactId)
+      res.status(200).json(result)
+    } catch (e) {
+      console.log(e)
+      res.status(404).json({ error: 'Not Found (handle this error properly)' })
+    }
+  }
+
   return {
-    create
+    create,
+    getById
   };
 };

@@ -41,8 +41,39 @@ export default ({ salesforceConnection, authenticationService }) => {
         }
     }
 
+    const findMemberById = async (id) => {
+        const contacts = await salesforceConnection.sobject("Contact")
+            .select("Id, FirstName, LastName, Birthdate, Email, MobilePhone")
+            .where({ Id: id })
+            .limit(1)
+            .execute();
+
+        if (contacts.length === 0) {
+            throw new Error('Contact not found');
+        }
+
+        const [contact] = contacts;
+        const {
+            Id: id,
+            FirstName: firstName,
+            LastName: lastName,
+            Birthdate: birthDate,
+            Email: email,
+            MobilePhone: mobileNumber
+        } = contact;
+
+        return {
+            id,
+            firstName,
+            lastName,
+            email,
+            mobileNumber,
+            birthDate: new Date(birthDate)
+        };
+    };
 
     return {
-        registerMember
+        registerMember,
+        findMemberById
     }
 }

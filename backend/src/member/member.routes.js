@@ -8,6 +8,7 @@ export default (memberService) => {
 
     const memberRoutes = express.Router()
     memberRoutes.post('/register', validate(createMemberSchema), memberHandlers.create);
+    memberRoutes.get('/:id', memberHandlers.getById)
 
     return memberRoutes
 }
