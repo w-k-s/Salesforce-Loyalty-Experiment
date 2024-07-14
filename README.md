@@ -2,12 +2,12 @@
 
 ## Introduction
 
-A proof of concept of an loyalty backend wherein Salesforce Loyalty Management is the source of truth for the customers loyalty transactions, loyalty points, loyalty tier (e.t.c) and events from Salesforce can be used to build features around loyalty (e.g. awarding raffle tickets)
+A proof of concept of an loyalty backend wherein Salesforce Loyalty Management is the source of truth for the customers loyalty transactions, points, tier (e.t.c).
 
 The purpose of this project is to:
 - Evaluate NodeJS libraries for Salesforce vs. propietary solutions e.g. Mulesoft
 - Demonstrate and Evaluate NodeJS libraries for building an Event Driven Architecture where Salesforce is the Event source
-- Demonstrating building loyalty functionality powered by Salesforce but outside of Salesforce (and Mulesoft flows) is more flexible to change, faster to develop, can be validated in PRs, can be tested end-to-end more thoroughly, loosely coupled and more conducive to a headless microservice architecture.
+- Demonstrate that building loyalty functionality powered by Salesforce but outside of Salesforce (and Mulesoft) flows is more flexible to change, faster to develop, can be validated in PRs, can be tested end-to-end more thoroughly, loosely coupled to a particular SaaS and more conducive to a headless microservice architecture.
 
 The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intention would be to intgerate Salesforce Loyalty Management. To be more precise, I've used `Order`, `OrderItem` in `Salesforce Sales Cloud` in place of `TransactionJournal`, `Product`, `ProductLineItem` in Salesforce Loyalty.
 
@@ -22,8 +22,11 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [x] 5. Use CDC instead of Platform Events
 - [x] 6. Setup DB connectivity
 - [x] 7. Validate request, model classes to make the code clearer? Should I migrate to TypeScript?
-- [ ] 8. Sign-up, Login, Authenticate Transaction API 
-- [ ] 9. Sort out out-of-order events.
+- [ ] 8. Sort out out-of-order events.
+- [x] 9. Sign-up as Member (Username/Password, via Google)
+- [ ] 10. Login as Member, View Profile
+- [ ] 11. Use client_credentials grant for Transaction API 
+- [ ] 12. Use client_credentials to impersonate member and Get member profile.
 
 ## Useful Resource
 
@@ -31,3 +34,4 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [ExpressJS Folder Structure](https://www.codemzy.com/blog/nodejs-file-folder-structure)
 - [Express Validator](https://stackoverflow.com/a/70637527/821110). Another [example](https://stackoverflow.com/a/60592312/821110) using Joi
 - [Express Openid](https://medium.com/keycloak/keycloak-express-openid-client-fabea857f11f)
+- [Express & PassportJS](https://curity.io/resources/learn/oidc-node-express/)

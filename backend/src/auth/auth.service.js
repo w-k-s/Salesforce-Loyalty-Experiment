@@ -15,7 +15,7 @@ export default ({
 
     let token = null
     const getAdminToken = async () => {
-        // supposed to be a cache access
+        // supposed to be a cache access with ttl = token expiry
         if (token) {
             return token
         }
@@ -72,16 +72,20 @@ export default ({
                 },
                 method: 'post',
                 body: JSON.stringify({
-
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
-                    emailVerified: false,
-                    enabled: false,
+                    emailVerified: true,
+                    enabled: true,
                     attributes: {
                         contactId: user.id,
                         mobileNumber: user.mobileNumber,
-                    }
+                    },
+                    credentials: [{
+                        type: "password",
+                        value: user.password,
+                        temporary: false
+                    }]
                 })
             })
             if (!response.ok) {

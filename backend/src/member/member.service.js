@@ -25,11 +25,13 @@ export default ({ salesforceConnection, authenticationService }) => {
             // Register User on Keycloak (sends OTP over SMS)
             await authenticationService.createUser({
                 id: id,
+                username: request.email,
+                password: request.password,
                 firstName: request.firstName,
                 middleName: request.middleName,
                 lastName: request.lastName,
                 email: request.email,
-                mobileNumber: request.mobileNumber
+                mobileNumber: request.mobileNumber,
             })
 
             console.log(`Member '${id}' created on keycloaks`)
