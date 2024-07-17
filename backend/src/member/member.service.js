@@ -54,7 +54,6 @@ export default ({ salesforceConnection, authenticationService }) => {
 
         const [contact] = contacts;
         const {
-            Id: id,
             FirstName: firstName,
             LastName: lastName,
             Birthdate: birthDate,

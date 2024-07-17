@@ -23,10 +23,11 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [x] 6. Setup DB connectivity
 - [x] 7. Validate request, model classes to make the code clearer? Should I migrate to TypeScript?
 - [ ] 8. Sort out out-of-order events.
-- [x] 9. Sign-up as Member (Username/Password, via Google)
-- [ ] 10. Login as Member, View Profile
+- [x] 9. Sign-up as Member (Username/Password)
+- [x] 10. Login as Member, View own Profile (but not other)
 - [ ] 11. Use client_credentials grant for Transaction API 
 - [ ] 12. Use client_credentials to impersonate member and Get member profile.
+- [ ] 13. Sign-up and sign-in with Google.
 
 ## Useful Resource
 
@@ -35,3 +36,4 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [Express Validator](https://stackoverflow.com/a/70637527/821110). Another [example](https://stackoverflow.com/a/60592312/821110) using Joi
 - [Express Openid](https://medium.com/keycloak/keycloak-express-openid-client-fabea857f11f)
 - [Express & PassportJS](https://curity.io/resources/learn/oidc-node-express/)
+- [Add Custom Claims to OpenID Token](https://medium.com/@ramanamuttana/custom-attribute-in-keycloak-access-token-831b4be7384a)
