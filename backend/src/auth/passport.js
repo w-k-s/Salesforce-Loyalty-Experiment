@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy, Issuer } from 'openid-client'
+import { Strategy as ClientCredentialsStrategy } from './client-credentials.strategy.js'
 
 export const getConfiguredPassport = async () => {
 
@@ -18,6 +19,13 @@ export const getConfiguredPassport = async () => {
     // Part 3b, configure the passport strategy
     passport.use('oidc', new Strategy({ client }, (tokenSet, userinfo, done) => {
         return done(null, tokenSet.claims());
+    }))
+
+    passport.use('m2m', new ClientCredentialsStrategy({
+        userInfoURL: "http://localhost:8080/realms/loyalty/protocol/openid-connect/userinfo"
+    }, (userInfo, done) => {
+        console.log('m2m', userInfo);
+        return done(null, userInfo);
     }))
 
     // Part 3d, tell passport how to serialize and deserialize user data

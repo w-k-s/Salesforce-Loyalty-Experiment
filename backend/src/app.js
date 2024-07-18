@@ -37,6 +37,7 @@ routes({
   app,
   transactionService,
   memberService,
+  passport
 })
 subscriptions({ salesforceConnection, transactionService })
 
