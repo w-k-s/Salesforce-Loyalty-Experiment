@@ -25,7 +25,7 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [ ] 8. Sort out out-of-order events.
 - [x] 9. Sign-up as Member (Username/Password)
 - [x] 10. Login as Member, View own Profile (but not other)
-- [ ] 11. Use client_credentials grant for Transaction API 
+- [x] 11. Use client_credentials grant for Transaction API 
 - [ ] 12. Use client_credentials to impersonate member and Get member profile.
 - [ ] 13. Sign-up and sign-in with Google.
 

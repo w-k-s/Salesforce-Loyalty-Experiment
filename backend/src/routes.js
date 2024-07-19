@@ -4,9 +4,9 @@ import authRoutes from './auth/auth.routes.js'
 import passport from 'passport'
 import { checkAuthenticated } from './middleware/index.js'
 
-export default ({ app, transactionService, memberService, passport }) => {
+export default ({ app, transactionService, memberService }) => {
     app.use('/auth', authRoutes())
     // TODO: verify grant type client credential, and client has scope to call this api
-    app.use('/api/v1/txn', transactionRoutes(transactionService, passport))
-    app.use('/api/v1/user', checkAuthenticated, memberRoutes(memberService))
+    app.use('/api/v1/txn', transactionRoutes(transactionService))
+    app.use('/api/v1/user', memberRoutes(memberService))
 }

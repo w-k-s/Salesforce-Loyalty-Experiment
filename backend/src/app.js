@@ -1,10 +1,9 @@
 import express from 'express';
 import routes from './routes.js'
 import subscriptions from './subscriptions.js'
-import { salesforceConnection, db, authentication } from './utils/config.js'
+import { salesforceConnection, db, authentication, getConfiguredPassport } from './utils/config.js'
 import bodyParser from 'body-parser';
 import expressSession from 'express-session';
-import { getConfiguredPassport } from './auth/passport.js'
 
 import TransactionService from './/transactions/transactions.service.js';
 import MemberService from './member/member.service.js';
