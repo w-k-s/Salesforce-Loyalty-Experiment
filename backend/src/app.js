@@ -1,9 +1,8 @@
 import express from 'express';
 import routes from './routes.js'
 import subscriptions from './subscriptions.js'
-import { salesforceConnection, db, authentication, getConfiguredPassport } from './utils/config.js'
+import { salesforceConnection, db, authentication } from './utils/config.js'
 import bodyParser from 'body-parser';
-import expressSession from 'express-session';
 
 import TransactionService from './/transactions/transactions.service.js';
 import MemberService from './member/member.service.js';
@@ -14,20 +13,6 @@ const port = 3000
 
 app.use(bodyParser.json())
 
-const memoryStore = new expressSession.MemoryStore();
-const session = {
-  secret: "someSecret",
-  resave: false,
-  saveUninitialized: false,
-  store: memoryStore
-};
-
-app.use(expressSession(session));
-
-const passport = await getConfiguredPassport();
-app.use(passport.initialize());
-app.use(passport.session());
-
 const transactionService = TransactionService({ salesforceConnection, db })
 const authenticationService = AuthenticationService(authentication)
 const memberService = MemberService({ salesforceConnection, authenticationService })
@@ -35,8 +20,7 @@ const memberService = MemberService({ salesforceConnection, authenticationServic
 routes({
   app,
   transactionService,
-  memberService,
-  passport
+  memberService
 })
 subscriptions({ salesforceConnection, transactionService })
 
