@@ -1,8 +1,5 @@
 import dotenv from 'dotenv';
-import passport from 'passport';
-import { Issuer, Strategy } from "openid-client"
 import { salesforceLogin } from './salesforce.js';
-import { Strategy as ClientCredentialsStrategy } from '../auth/client-credentials.strategy.js';
 import knex from 'knex'
 
 dotenv.config();
@@ -43,4 +40,4 @@ export const authentication = {
     issuerUrl: process.env.KEYCLOAK_ISSUER_URL
 };
 
-
+export const SALESFORCE_PRICEBOOK2_ID = '01s8d00000A4LSdAAN'

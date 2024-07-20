@@ -1,5 +1,3 @@
-import Joi from 'joi';
-
 export const validate = (schema) => {
     return (req, res, next) => {
         const { error, _ } = schema.validate(req.body);

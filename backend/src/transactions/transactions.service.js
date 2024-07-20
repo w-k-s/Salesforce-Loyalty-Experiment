@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import transactionDao from './transactions.data.js'
 import raffleService from '../raffles/raffle.service.js';
+import { SALESFORCE_PRICEBOOK2_ID } from '../utils/config.js';
 
 export default ({ salesforceConnection, db }) => {
     const { saveTransaction, updateTransaction, findTransactionById } = transactionDao(db)
@@ -14,17 +15,29 @@ export default ({ salesforceConnection, db }) => {
                 ShipToContactId: transaction.customerId,
                 EffectiveDate: new Date(transaction.date),
                 OrderReferenceNumber: uuidv4(),
-                Description: 'Number',
                 Status: 'Draft',
-                Pricebook2Id: '01s8d00000A4LSdAAN'
+                Pricebook2Id: SALESFORCE_PRICEBOOK2_ID
             });
 
-            await salesforceConnection.sobject("OrderItem").create({
-                OrderId: id,
-                Quantity: transaction.products[0].quantity,
-                UnitPrice: '100.0',
-                PricebookEntryId: transaction.products[0].id,//'01u8d00000EkE6zAAF'
-            })
+            const productIds = transaction.products.map((p) => p.id)
+
+            const productPrices = await salesforceConnection.sobject("PricebookEntry")
+                .select("Id, UnitPrice")
+                .where({ Id: productIds })
+                .limit(200)
+                .execute();
+
+            const productPriceLookup = new Map(productPrices.map((price) => [price.Id, price.UnitPrice]))
+
+            for (const product of transaction.products) {
+                const unitPrice = productPriceLookup.get(product.id)
+                await salesforceConnection.sobject("OrderItem").create({
+                    OrderId: id,
+                    Quantity: product.quantity,
+                    UnitPrice: unitPrice,
+                    PricebookEntryId: product.id
+                })
+            }
 
             return id;
         } catch (e) {
