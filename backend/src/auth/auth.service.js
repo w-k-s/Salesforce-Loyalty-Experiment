@@ -78,7 +78,7 @@ export default ({
                     emailVerified: true,
                     enabled: true,
                     attributes: {
-                        contactId: user.id,
+                        customerId: user.id,
                         mobileNumber: user.mobileNumber,
                     },
                     credentials: [{

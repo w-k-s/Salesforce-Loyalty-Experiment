@@ -10,8 +10,8 @@ export default ({ salesforceConnection, db }) => {
         try {
             const { id } = await salesforceConnection.sobject("Order").create({
                 AccountId: '0018d00000joJXIAA2',
-                BillToContactId: '0038d00000k2lX9AAI',
-                ShipToContactId: '0038d00000k2lX9AAI',
+                BillToContactId: transaction.customerId,
+                ShipToContactId: transaction.customerId,
                 EffectiveDate: new Date(transaction.date),
                 OrderReferenceNumber: uuidv4(),
                 Description: 'Number',
@@ -28,7 +28,7 @@ export default ({ salesforceConnection, db }) => {
 
             return id;
         } catch (e) {
-            console.error(e);
+            throw new Error(e.message)
         }
     }
 

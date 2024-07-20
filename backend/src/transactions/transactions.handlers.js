@@ -7,7 +7,7 @@ export default (transactionService) => {
       res.status(201).json({ Id: result });
     } catch (e) {
       console.error(e);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ error: e.message });
     }
   }
 
