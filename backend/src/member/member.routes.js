@@ -2,7 +2,7 @@ import express from 'express';
 import handlers from './member.handlers.js';
 import { createMemberSchema } from './member.validation.js';
 import { validate } from '../middleware/index.js'
-import { requiresAuthentication, checkOwner } from '../middleware/authentication.js';
+import { requiresScope, checkOwner } from '../middleware/authentication.js';
 
 export default (memberService) => {
     const memberHandlers = handlers(memberService)
@@ -14,7 +14,7 @@ export default (memberService) => {
 
     const memberRoutes = express.Router()
     memberRoutes.post('/register', validate(createMemberSchema), memberHandlers.create);
-    memberRoutes.get('/:id', requiresAuthentication, checkResourceOwner, memberHandlers.getById)
+    memberRoutes.get('/:id', requiresScope('view-profile'), checkResourceOwner, memberHandlers.getById)
 
     return memberRoutes
 }

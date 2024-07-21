@@ -41,6 +41,8 @@ Strategy.prototype.authenticate = async function (req) {
     }
 
     console.log(`Calling '${this.options.userInfoURL}'`)
+    // This is the lazy unscalable approach (calling the userinfo url). Once we have the cache, we'll use that to store the jws and validate jwts locally.
+    // See: https://www.keycloak.org/docs/25.0.2/securing_apps/#validating-access-tokens
     try {
         const response = await fetch(this.options.userInfoURL, {
             headers: {

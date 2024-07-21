@@ -29,23 +29,20 @@ export const requiresScope = (scope) => {
     return (req, res, next) => {
         passport.authenticate('oauth2', { session: false }, (err, user, info) => {
             if (err) { return next(err); }
-            if (!user || !user.realm_access) {
-                if (user) {
-                    console.log(`${user.preferred_username} has no roles`)
-                } else {
-                    console.log('Not authenticated')
-                }
-
+            if (!user) {
+                console.log('Not authenticated')
                 return res.status(401).send({ "error": "Unauthorized" })
             }
 
-            const { realm_access: { roles } } = user
-
-            if (!roles) {
-                return res.status(401).send({ "error": "Unauthorized" })
+            let allRoles = []
+            if (user.realm_access) {
+                const { realm_access: { roles } } = user
+                allRoles = [...allRoles, ...roles]
             }
 
-            if (!roles.includes(scope)) {
+
+            console.log(allRoles)
+            if (!allRoles.includes(scope)) {
                 console.log(`${user.preferred_username} does not have scope ${scope}`)
                 return res.status(401).send({ "error": "Unauthorized" })
             }
