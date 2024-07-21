@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { salesforceLogin } from './salesforce.js';
 import knex from 'knex'
+import mq from './mq.js'
 
 dotenv.config();
 
@@ -41,3 +42,10 @@ export const authentication = {
 };
 
 export const SALESFORCE_PRICEBOOK2_ID = '01s8d00000A4LSdAAN'
+
+export const { publish, createConsumer } = mq({
+    username: process.env.RABBITMQ_USERNAME,
+    password: process.env.RABBITMQ_PASSWORD,
+    host: process.env.RABBITMQ_HOST,
+    port: process.env.RABBITMQ_PORT
+})

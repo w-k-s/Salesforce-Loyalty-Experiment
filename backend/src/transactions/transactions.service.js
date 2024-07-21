@@ -50,12 +50,22 @@ export default ({ salesforceConnection, db }) => {
         issueRaffleTickets(event);
     }
 
+    /**
+     * 
+     * @returns true if the transaction was updated
+     */
     const onTransactionUpdated = async (event) => {
-        await updateTransaction(event);
-        const transaction = await findTransactionById(event.id)
-        if (transaction) {
+        const updated = await updateTransaction(event, (oldTransaction) => {
+            return oldTransaction.modifiedDate < event.modifiedDate
+        })
+
+        if (updated) {
+            // An additional query is required because the event doesn't have most of the data.
+            const transaction = await findTransactionById(event.id)
             issueRaffleTickets(transaction);
         }
+
+        return updated
     }
 
     return {

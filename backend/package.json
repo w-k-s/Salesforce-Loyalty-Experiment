@@ -15,6 +15,7 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.10.10",
     "@grpc/proto-loader": "^0.7.13",
+    "amqplib": "^0.10.4",
     "avro-js": "^1.11.3",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",

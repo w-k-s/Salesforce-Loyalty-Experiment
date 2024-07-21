@@ -14,10 +14,16 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: password
       DB_NAME: loyalty
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_HOST: mq
+      RABBITMQ_PORT: 5672
+      KEYCLOAK_ISSUER_URL: http://keycloak:8080/realms/loyalty
     env_file:
       - backend/.env
     depends_on:
       - postgres
+      - mq
 
   postgres:
     image: postgres:15
@@ -50,4 +56,14 @@ services:
     command: ["start-dev","--db","postgres","--db-url","jdbc:postgresql://authdb:5432/keycloak","--db-username","postgres","--db-password","password"]
     depends_on:
       - authdb
+  
+  mq:
+    image: rabbitmq:3
+    container_name: mq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest # just making the default values explicit
+    ports: 
+      - 5672:5672
+      - 8089:8080 # Management is available on port 8089 on host machine
 
