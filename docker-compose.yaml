@@ -53,9 +53,9 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
-    command: ["start-dev","--db","postgres","--db-url","jdbc:postgresql://authdb:5432/keycloak","--db-username","postgres","--db-password","password"]
+    command: ["start-dev","--db","postgres","--db-url","jdbc:postgresql://authdb:5432/keycloak","--db-username","postgres","--db-password","password","--import-realm"]
     volumes:
-      - ./keycloak:/tmp/export
+      - ./keycloak:/opt/keycloak/data/import
     depends_on:
       - authdb
   
