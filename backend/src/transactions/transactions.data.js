@@ -29,8 +29,10 @@ export default (db) => {
         return await db.insert(entity).into(tableName)
     }
 
+    // TODO: have this code reviewed
     const updateTransaction = async (newTransaction, conditionFn) => {
-        await db.transaction((trx) => {
+        let result = false
+        await db.transaction(async (trx) => {
             return db(tableName)
                 .transacting(trx)
                 .forUpdate()
@@ -38,30 +40,33 @@ export default (db) => {
                 .where('id', newTransaction.id)
                 .limit(1)
                 .then((records) => {
-                    if (records.length == 0) {
-                        return null
+                    if (records.length === 0) {
+                        throw new Error("record not found")
                     }
-                    return entityToTransaction(records[0])
+                    return records[0]
                 })
+                .then((record) => entityToTransaction(record))
                 .then((oldTransaction) => {
-                    const proceed = oldTransaction != null && (!conditionFn || conditionFn(oldTransaction))
-                    if (proceed) {
-                        return db(tableName).where('id', '=', oldTransaction.id).update({
+                    const proceed = oldTransaction !== null && (!conditionFn || conditionFn(oldTransaction));
+                    if (!proceed) {
+                        throw new Error("stale update")
+                    }
+                    return db(tableName)
+                        .transacting(trx)
+                        .where('id', '=', oldTransaction.id)
+                        .update({
                             total_amount: newTransaction.totalAmount,
                             modified_date: newTransaction.modifiedDate,
-                        }).then(true)
-                    }
-                    return Promise.resolve(false)
+                        })
+                        .then(trx.commit)
+                        .then(() => result = true)
+                }).catch((err) => {
+                    console.log("Failed to update", err)
+                    result = false
                 })
-                .then((success) => {
-                    return trx.commit().then(success)
-                })
-                .catch(async (err) => {
-                    console.log(err)
-                    return trx.rollback().then(false)
-                })
-        })
-    }
+        });
+        return result
+    };
 
     return {
         findTransactionById,

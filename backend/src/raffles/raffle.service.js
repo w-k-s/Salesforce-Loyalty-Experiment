@@ -17,7 +17,7 @@ export default (db) => {
             const ticketsToAward = Math.floor(transaction.totalAmount / RAFFLE_TICKET_PRICE);
 
             // Check if the transaction has already been awarded raffle tickets
-            const raffleTransaction = await findRaffleTicketsForTransaction({ transactionId: transaction.id })
+            const raffleTransaction = await findRaffleTicketsForTransaction(transaction.id)
 
             console.log(`Transaction: ${transaction.id}. Amount: ${transaction.totalAmount}. Tickets To Award: ${ticketsToAward}. Tickets Awarded: ${raffleTransaction === null}`)
             // If the transaction has not been awarded raffle tickets, award them.

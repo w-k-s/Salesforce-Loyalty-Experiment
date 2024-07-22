@@ -22,8 +22,8 @@ export default async ({ salesforceConnection, transactionService, publish, creat
             console.log(
                 `Handling ${event.payload.ChangeEventHeader.entityName} change event ` +
                 `with ID ${event.replayId} ` +
-                `on channel ${eventEmitter.getTopicName()} ` +
-                `(${eventEmitter.getReceivedEventCount()}/${eventEmitter.getRequestedEventCount()} ` +
+                `on channel ${salesforceEventEmitter.getTopicName()} ` +
+                `(${salesforceEventEmitter.getReceivedEventCount()}/${salesforceEventEmitter.getRequestedEventCount()} ` +
                 `events received so far)`
             );
 
@@ -54,9 +54,11 @@ export default async ({ salesforceConnection, transactionService, publish, creat
             try {
                 if (onTransactionUpdated(payload)) {
                     // update processed
+                    console.log(`Update processed: ${payload.id}`)
                     ack()
                 } else {
                     // update stale of transaction create event not received
+                    console.log(`Update not processed: ${payload.id}`)
                     nack()
                 }
             } catch (e) {

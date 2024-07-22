@@ -16,6 +16,7 @@ export default ({ salesforceConnection, db }) => {
                 EffectiveDate: new Date(transaction.date),
                 OrderReferenceNumber: uuidv4(),
                 Status: 'Draft',
+                Description: 'Number',
                 Pricebook2Id: SALESFORCE_PRICEBOOK2_ID
             });
 

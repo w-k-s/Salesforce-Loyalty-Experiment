@@ -7,13 +7,13 @@ export default ({
     host,
     port
 }) => {
-    const connectionString = `amqp://${username}:${password}@${host}:${port}/`
+    const connectionString = `amqp://${username}:${password}@${host}:${port}`
 
     const publish = (payload, queueName, queueParams = { durable: false }) => {
 
         amqp.connect(connectionString, (connectionError, connection) => {
             if (connectionError) {
-                console.log("Failed to connect to rabbitmq")
+                console.log(`Failed to connect to rabbitmq at ${host}:${port} for publishing`)
                 throw connectionError
             }
 
@@ -34,7 +34,7 @@ export default ({
 
         amqp.connect(connectionString, (connectionError, connection) => {
             if (connectionError) {
-                console.log("Failed to connect to rabbitmq")
+                console.log(`Failed to consume from rabbitmq at ${host}:${port}`)
                 throw connectionError
             }
 
@@ -51,9 +51,11 @@ export default ({
                         console.log(contents);
 
                         if (autoAcknowledge) {
-                            eventEmitter.emit('data', payload)
+                            eventEmitter.emit('data', contents)
                         } else {
-                            eventEmitter.emit('data', payload, channel.ack, channel.nack)
+                            const ack = () => { channel.ack(message) }
+                            const nack = () => { channnel.nack(message) }
+                            eventEmitter.emit('data', contents, ack, nack)
                         }
                     }
                 }, {
