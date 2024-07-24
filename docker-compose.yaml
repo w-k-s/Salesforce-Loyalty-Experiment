@@ -19,11 +19,13 @@ services:
       RABBITMQ_HOST: mq
       RABBITMQ_PORT: 5672
       KEYCLOAK_ISSUER_URL: http://keycloak:8080/realms/loyalty
+      REDIS_URL: 'redis://redis:6380'
     env_file:
       - backend/.env
     depends_on:
       - postgres
       - mq
+      - redis
 
   postgres:
     image: postgres:15
@@ -69,3 +71,8 @@ services:
       - 5672:5672
       - 8089:8080 # Management is available on port 8089 on host machine
 
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: redis
+    ports:
+      - 6379:6379

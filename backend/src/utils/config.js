@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import { salesforceLogin } from './salesforce.js';
 import knex from 'knex'
 import mq from './mq.js'
+import cache from './cache.js';
 
 dotenv.config();
 
@@ -48,4 +49,8 @@ export const { publish, createConsumer } = mq({
     password: process.env.RABBITMQ_PASSWORD,
     host: process.env.RABBITMQ_HOST,
     port: process.env.RABBITMQ_PORT
+})
+
+export const { cacheSet, cacheGet } = cache({
+    connectionUrl: process.env.REDIS_URL
 })

@@ -1,4 +1,4 @@
-import { authentication } from "../utils/config.js";
+import { authentication, cacheSet, cacheGet } from "../utils/config.js";
 import passport from "passport";
 import { Issuer } from "openid-client"
 import { Strategy } from '../auth/client-credentials.strategy.js'
@@ -6,6 +6,8 @@ import { Strategy } from '../auth/client-credentials.strategy.js'
 const issuer = await Issuer.discover(authentication.issuerUrl)
 passport.use('oauth2', new Strategy({
     userInfoURL: issuer.userinfo_endpoint,
+    cacheSet,
+    cacheGet,
 }, (userInfo, done) => {
     console.log('oauth2', userInfo);
     return done(null, userInfo);

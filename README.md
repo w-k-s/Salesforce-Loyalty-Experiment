@@ -37,3 +37,4 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [Express & PassportJS](https://curity.io/resources/learn/oidc-node-express/)
 - [Add Custom Claims to OpenID Token](https://medium.com/@ramanamuttana/custom-attribute-in-keycloak-access-token-831b4be7384a)
 - [Add more info to userInfo endpoint](https://stackoverflow.com/questions/75869268/get-roles-from-keycloak-userinfo-endpoint)
+- [NodeJS Redis Cheatsheet](https://redis.js.org/#node-redis-usage-redis-commands)

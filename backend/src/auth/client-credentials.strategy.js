@@ -7,6 +7,8 @@ const NAME = 'keycloak-validate-token'
  * 
  * @param {Object} options options object
  * @param {string} options.userInfoURL UserInfo URL
+ * @param {(key, value,{timeToLiveSeconds}) => void} options.cacheSet Caches the value in a distributed cache using the given name
+ * @param {(key) => value} options.cacheGet Retrieves the value from the distributed cache using the given key
  */
 export function Strategy(options, verify) {
     if (typeof options == 'function') {

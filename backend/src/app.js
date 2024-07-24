@@ -1,7 +1,7 @@
 import express from 'express';
 import routes from './routes.js'
 
-import { salesforceConnection, db, authentication, publish, createConsumer } from './utils/config.js'
+import { salesforceConnection, db, authentication, publish, createConsumer, cacheSet, cacheGet } from './utils/config.js'
 import bodyParser from 'body-parser';
 
 import TransactionService from './/transactions/transactions.service.js';
@@ -17,7 +17,7 @@ app.use(bodyParser.json())
 
 const transactionService = TransactionService({ salesforceConnection, db })
 const authenticationService = AuthenticationService(authentication)
-const memberService = MemberService({ salesforceConnection, authenticationService })
+const memberService = MemberService({ salesforceConnection, authenticationService, cacheSet, cacheGet })
 const productService = ProductService({ salesforceConnection })
 
 

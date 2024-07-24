@@ -1,12 +1,10 @@
-export default ({ salesforceConnection, authenticationService }) => {
-
-    const pretendCache = {}
+export default ({ salesforceConnection, authenticationService, cacheSet, cacheGet }) => {
 
     const registerMember = async ({ request }) => {
         const cacheKey = `registration:${request.email}`
         try {
             // Create Contact in Salesforce
-            let id = pretendCache[cacheKey];
+            let id = await cacheGet(cacheKey);
             if (!id) {
                 const { id: salesforceId } = await salesforceConnection.sobject("Contact").create({
                     FirstName: request.firstName,
@@ -18,7 +16,7 @@ export default ({ salesforceConnection, authenticationService }) => {
                     MobilePhone: request.mobileNumber
                 });
                 id = salesforceId
-                pretendCache[cacheKey] = salesforceId
+                await cacheSet(cacheKeysalesforceId)
             }
 
             console.log(`Member '${request.email}' registered with id '${id}'`)
