@@ -157,17 +157,20 @@ export default ({
     }
 
     const updateUserRoles = async ({ userId, roles }) => {
-        console.log({ roles })
+
         const token = await getAdminToken()
         const response = await fetch(`${baseUrl}/admin/realms/${userRealm}/users/${userId}/role-mappings/realm`, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             },
             method: 'post',
-            json: roles
+            body: JSON.stringify(roles)
         })
 
-        if (!response.ok) {
+        const success = response.status == 204
+
+        if (!success) {
             let json = ''
             if (response.headers.get("Content-Length") > 0) {
                 json = await response.json()
@@ -175,7 +178,7 @@ export default ({
             throw new Error(`${response.statusText} - ${JSON.stringify(json)}`);
         }
 
-        return response.ok
+        return success
     }
 
     return {
