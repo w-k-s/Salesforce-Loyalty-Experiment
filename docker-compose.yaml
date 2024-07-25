@@ -19,13 +19,16 @@ services:
       RABBITMQ_HOST: mq
       RABBITMQ_PORT: 5672
       KEYCLOAK_ISSUER_URL: http://keycloak:8080/realms/loyalty
-      REDIS_URL: 'redis://redis:6380'
+      REDIS_URL: 'redis://redis:6379'
     env_file:
       - backend/.env
     depends_on:
       - postgres
       - mq
       - redis
+      - keycloak
+    restart: always
+    command: sh -c "npm install && npm install -g knex && knex migrate:latest && npm start"
 
   postgres:
     image: postgres:15

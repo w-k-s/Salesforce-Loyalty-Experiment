@@ -14,12 +14,11 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-
 # Expose the port the app runs on
 EXPOSE 3000
 
 # Define the command to run the app
-ENTRYPOINT ["./entrypoint.sh"]
+
 
 # Health check to ensure the container is running
 #HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
