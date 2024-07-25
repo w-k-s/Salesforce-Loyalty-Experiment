@@ -5,7 +5,7 @@ import { Strategy } from '../auth/client-credentials.strategy.js'
 
 const issuer = await Issuer.discover(authentication.issuerUrl)
 passport.use('oauth2', new Strategy({
-    userInfoURL: issuer.userinfo_endpoint,
+    jwksUri: issuer.jwks_uri,
     cacheSet,
     cacheGet,
 }, (userInfo, done) => {

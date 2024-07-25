@@ -1,14 +1,14 @@
 import util from 'util'
 import passport from 'passport-strategy'
+import jwksClient from 'jwks-rsa'
+import jwt from 'jsonwebtoken'
 
 const NAME = 'keycloak-validate-token'
 
 /**
  * 
  * @param {Object} options options object
- * @param {string} options.userInfoURL UserInfo URL
- * @param {(key, value,{timeToLiveSeconds}) => void} options.cacheSet Caches the value in a distributed cache using the given name
- * @param {(key) => value} options.cacheGet Retrieves the value from the distributed cache using the given key
+ * @param {string} options.jwksUri Open ID Certs Endpoint
  */
 export function Strategy(options, verify) {
     if (typeof options == 'function') {
@@ -16,7 +16,7 @@ export function Strategy(options, verify) {
         options = {};
     }
     if (!verify) throw new Error('OAuth 2.0 client password strategy requires a verify function');
-    if (!options.userInfoURL) throw new Error("options.userInfoURL url is required")
+    if (!options.jwksUri) throw new Error("options.jwksUri url is required")
 
     passport.Strategy.call(this);
     this.name = NAME
@@ -42,26 +42,28 @@ Strategy.prototype.authenticate = async function (req) {
         return this.fail();
     }
 
-    console.log(`Calling '${this.options.userInfoURL}'`)
-    // This is the lazy unscalable approach (calling the userinfo url). Once we have the cache, we'll use that to store the jws and validate jwts locally.
-    // See: https://www.keycloak.org/docs/25.0.2/securing_apps/#validating-access-tokens
     try {
-        const response = await fetch(this.options.userInfoURL, {
-            headers: {
-                Authorization: authorization
-            }
-        })
 
-        if (!response.ok) {
-            let hint = ""
-            if (response.status == 403) {
-                hint = " A 403 code might be because the token was requested without explictly requesting the `openid` scope."
-            }
-            console.log(`Token validation failed with status '${response.statusText}'.${hint}`)
-            return this.fail();
+        var client = jwksClient({
+            cache: true,
+            cacheMaxEntries: 5,
+            cacheMaxAge: 600000, // 10m
+            jwksUri: this.options.jwksUri
+        });
+
+        function getKey(header, callback) {
+            client.getSigningKey(header.kid, function (err, key) {
+                if (err) {
+                    console.log(`Failed to retrieve key with id '${header.kid}'`)
+                    callback(err, null);
+                } else {
+                    var signingKey = key.publicKey || key.rsaPublicKey;
+                    callback(null, signingKey);
+                }
+
+            });
         }
 
-        const userInfo = await response.json()
         const self = this;
         function verified(err, client, info) {
             if (err) { return self.error(err); }
@@ -69,7 +71,12 @@ Strategy.prototype.authenticate = async function (req) {
             self.success(client, info);
         }
 
-        this._verify(userInfo, verified);
+        const [_, token] = authorization.split(" ")
+        jwt.verify(token, getKey, function (err, decoded) {
+            console.log({ decoded })
+            self._verify(decoded, verified);
+        })
+
     } catch (e) {
         console.log(e)
     }

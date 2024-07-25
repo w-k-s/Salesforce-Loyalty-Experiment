@@ -51,6 +51,6 @@ export const { publish, createConsumer } = mq({
     port: process.env.RABBITMQ_PORT
 })
 
-export const { cacheSet, cacheGet } = cache({
+export const { set: cacheSet, get: cacheGet } = await cache({
     connectionUrl: process.env.REDIS_URL
 })

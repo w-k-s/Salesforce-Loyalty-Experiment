@@ -16,7 +16,7 @@ export default ({ salesforceConnection, authenticationService, cacheSet, cacheGe
                     MobilePhone: request.mobileNumber
                 });
                 id = salesforceId
-                await cacheSet(cacheKeysalesforceId)
+                await cacheSet(cacheKey, salesforceId)
             }
 
             console.log(`Member '${request.email}' registered with id '${id}'`)
@@ -35,7 +35,10 @@ export default ({ salesforceConnection, authenticationService, cacheSet, cacheGe
             console.log(`Member '${id}' created on keycloaks`)
             return id;
         } catch (e) {
-            console.error(e);
+            console.log(e)
+            if (e.errorCode === "DUPLICATES_DETECTED") {
+                throw new Error("Account already exists")
+            }
         }
     }
 

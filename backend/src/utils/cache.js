@@ -9,14 +9,16 @@ export default async ({
     client.on('error', err => console.log('Redis Client Error', err));
     await client.connect();
 
-    const set = async (key, value, { timeToLiveSeconds }) => {
-        if (timeToLiveSeconds > 0) {
-            return client.set(key, value, { EX: timeToLiveSeconds })
+    const set = (key, value, options = {}) => {
+        if (options.timeToLiveSeconds > 0) {
+            return client.set(key, value, { EX: options.timeToLiveSeconds })
         }
         return client.set(key, value)
     }
 
-    const get = async (key) => client.get(key)
+    const get = async (key) => {
+        return client.get(key)
+    }
 
     return {
         set,

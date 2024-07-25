@@ -85,7 +85,10 @@ export default ({
                         type: "password",
                         value: user.password,
                         temporary: false
-                    }]
+                    }],
+                    realmRoles: [
+                        "loyalty-member"
+                    ]
                 })
             })
             if (!response.ok) {
