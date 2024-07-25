@@ -585,7 +585,7 @@
     "realmRoles" : [ "default-roles-master" ],
     "clientRoles" : {
       "admin-cli" : [ "uma_protection" ],
-      "loyalty-realm" : [ "manage-users" ]
+      "loyalty-realm" : [ "view-realm", "manage-realm", "view-clients", "manage-users" ]
     },
     "notBefore" : 0,
     "groups" : [ ]

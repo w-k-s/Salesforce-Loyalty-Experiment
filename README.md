@@ -39,3 +39,12 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [Add more info to userInfo endpoint](https://stackoverflow.com/questions/75869268/get-roles-from-keycloak-userinfo-endpoint)
 - [OpenID Configuration](http://localhost:8080/realms/loyalty/.well-known/openid-configuration)
 - [NodeJS Redis Cheatsheet](https://redis.js.org/#node-redis-usage-redis-commands)
+
+```shell
+docker exec -it keycloak sh
+cd ~/bin
+
+./kc.sh export --realm loyalty --file /tmp/export/loyalty.json --db postgres --db-url jdbc:postgresql://authdb:5432/keycloak --db-username postgres --db-password password
+
+./kc.sh export --realm master --file /tmp/export/master.json --db postgres --db-url jdbc:postgresql://authdb:5432/keycloak --db-username postgres --db-password password
+```
