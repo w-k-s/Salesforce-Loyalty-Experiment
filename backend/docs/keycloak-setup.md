@@ -69,17 +69,17 @@ From what I understand
 
 ## Sign-up
 
-### Configuring admin-cli for user registration
+### Configuring admin-cli for user registration
 
 ![Configure `admin-cli` for user registration](./media/configure-admin-cli-for-user-registration.gif)
 
-### Adding custom field to user profile
+### Adding custom field to user profile
 
 We want to add the salesforce contact Id in the user profile
 
 ![Create CustomerId as user profile attribute](./media/create-customer-id-attribute.gif)
 
-### Including customerId in the Access Token
+### Including customerId in the Access Token
 
 - We want to inlcude the customerId in the access token so that we can attribute actions and resources to the contact on Salesforce.
 
@@ -88,7 +88,7 @@ We want to add the salesforce contact Id in the user profile
 ---
 ## Login
 
-### Disabling sign-up on the login screen
+### Disabling sign-up on the login screen
 
 A client will be able to request a token for a user from keycloak. 
 The member will need to enter their login credentials in a keycloak login form.
