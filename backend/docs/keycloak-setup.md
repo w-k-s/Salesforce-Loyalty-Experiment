@@ -1,17 +1,4 @@
 # Keycloak Setup
-
-## Glossary
-
-- **Loyalty Application**: A loyalty application is an application that allows you to take advantage of rewards earned from repeatedly using a service. A good example is Airline Frequent Flyer programmes that offer you benefits for repeatedly travelling with the airline.
-
-- **Loyalty Partners**: A loyalty partner is a company that either expands or enhances the loyalty eco-system. 
-
-    For example; car rental companies could partner with a frequent flyer programme so that you earn miles not only when you fly, but also when you rent a car and drive.
-
-    hotels could enhance the frequent flyer programme by offering a discounted stay in exchange for redeeming miles.
-
-    This project only considers partners that expand the ecosystem. In this respect, partner companies notify the loyalty backend when a transaction occurs so that the programme member earns loyalty currency.
-
 ---
 
 ## Setup
@@ -81,6 +68,10 @@ From what I understand
 ---
 
 ## Sign-up
+
+### Configuring admin-cli for user registration
+
+![Configure `admin-cli` for user registration](./media/configure-admin-cli-for-user-registration.gif)
 
 ### Adding custom field to user profile
 

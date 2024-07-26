@@ -1,0 +1,574 @@
+{
+	"info": {
+		"_postman_id": "c761576e-2529-4fb0-a639-98cb572ff864",
+		"name": "Loyalty",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Keycloak",
+			"item": [
+				{
+					"name": "Get Realm Roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": [
+						{
+							"name": "Realm Roles",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/admin/realms/loyalty/roles",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"admin",
+										"realms",
+										"loyalty",
+										"roles"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-length",
+									"value": "1318"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json;charset=UTF-8"
+								},
+								{
+									"key": "Referrer-Policy",
+									"value": "no-referrer"
+								},
+								{
+									"key": "Strict-Transport-Security",
+									"value": "max-age=31536000; includeSubDomains"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "SAMEORIGIN"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"88b052e5-7fce-4529-9838-0bcb32c28068\",\n        \"name\": \"view-profile\",\n        \"description\": \"\",\n        \"composite\": false,\n        \"clientRole\": false,\n        \"containerId\": \"2806f1ba-057b-4da1-802f-6d62c6c8195a\"\n    },\n    {\n        \"id\": \"e85d8c27-c3b9-466d-882b-2287f8480360\",\n        \"name\": \"loyalty-partner\",\n        \"description\": \"\",\n        \"composite\": true,\n        \"clientRole\": false,\n        \"containerId\": \"2806f1ba-057b-4da1-802f-6d62c6c8195a\"\n    },\n    {\n        \"id\": \"a68631f2-7e0a-49a0-a3cf-faf152ceb993\",\n        \"name\": \"uma_authorization\",\n        \"description\": \"${role_uma_authorization}\",\n        \"composite\": false,\n        \"clientRole\": false,\n        \"containerId\": \"2806f1ba-057b-4da1-802f-6d62c6c8195a\"\n    },\n    {\n        \"id\": \"8c48fd3e-11e6-47ed-b34b-7dedee8f176d\",\n        \"name\": \"default-roles-loyalty\",\n        \"description\": \"${role_default-roles}\",\n        \"composite\": true,\n        \"clientRole\": false,\n        \"containerId\": \"2806f1ba-057b-4da1-802f-6d62c6c8195a\"\n    },\n    {\n        \"id\": \"443fbe41-0df0-4d9d-a537-f0ce47718ed2\",\n        \"name\": \"offline_access\",\n        \"description\": \"${role_offline-access}\",\n        \"composite\": false,\n        \"clientRole\": false,\n        \"containerId\": \"2806f1ba-057b-4da1-802f-6d62c6c8195a\"\n    },\n    {\n        \"id\": \"a54d74e5-51a1-4541-b7ed-b542ddad0e68\",\n        \"name\": \"create-transaction\",\n        \"description\": \"\",\n        \"composite\": false,\n        \"clientRole\": false,\n        \"containerId\": \"2806f1ba-057b-4da1-802f-6d62c6c8195a\"\n    },\n    {\n        \"id\": \"e3ff8766-1d8d-4584-9d34-a7fb46ccd599\",\n        \"name\": \"loyalty-member\",\n        \"description\": \"\",\n        \"composite\": true,\n        \"clientRole\": false,\n        \"containerId\": \"2806f1ba-057b-4da1-802f-6d62c6c8195a\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Assign Roles",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n      \"id\": \"e3ff8766-1d8d-4584-9d34-a7fb46ccd599\",\n      \"name\": \"loyalty-member\",\n      \"description\": \"\",\n      \"composite\": true,\n      \"clientRole\": false,\n      \"containerId\": \"2806f1ba-057b-4da1-802f-6d62c6c8195a\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/realms/loyalty/users/${userId}/role-mappings/realm",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"realms",
+								"loyalty",
+								"users",
+								"${userId}",
+								"role-mappings",
+								"realm"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "scope",
+						"value": "openid profile",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "client_credentials",
+						"type": "string"
+					},
+					{
+						"key": "password",
+						"value": "admin",
+						"type": "string"
+					},
+					{
+						"key": "username",
+						"value": "admin",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "VVD9tWJt4ppNI8y5ozew01Ap2XgrA499",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "admin-cli",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "http://localhost:8080/realms/master/protocol/openid-connect/token",
+						"type": "string"
+					},
+					{
+						"key": "tokenName",
+						"value": "Admin Token",
+						"type": "string"
+					},
+					{
+						"key": "useBrowser",
+						"value": true,
+						"type": "boolean"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "http://localhost:3000/auth/callback",
+						"type": "string"
+					},
+					{
+						"key": "tokenType",
+						"value": "Bearer",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "http://localhost:8080/realms/loyalty/protocol/openid-connect/auth",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "body",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Post Transaction",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "clientId",
+							"value": "partner-1",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "nclE6t6UubT2bFTCXqA53bQ0cSqLcT6u",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"type": "string"
+						},
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "string"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:3000/auth/callback",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJiMXN4T0NVTk1GSlhvNWFkSUlfM2VHdUQ5c0YyaExGQ3NVRW9ZbXdZa0p3In0.eyJleHAiOjE3MjA5NjQ3MDgsImlhdCI6MTcyMDk2NDQwOCwiYXV0aF90aW1lIjoxNzIwOTY0MzU0LCJqdGkiOiJlYjMxYjQ2Ni1lNjA2LTQxMDItYjMwZS0wYjZiNTE2ZjM1OTAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvcmVhbG1zL2xveWFsdHkiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiNDFhNmRhODktZDMzMi00NmMyLWIzOTEtMzlkY2ExZTA3MDY1IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoibG95YWx0eS1jbGllbnQiLCJzaWQiOiJjZWE0OWM2My04ZTIxLTQ5MjktYjc5My02OWU2ZGY1MWNjZWMiLCJhY3IiOiIwIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJkZWZhdWx0LXJvbGVzLWxveWFsdHkiLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiV2FxcWFzIFNoZWlraCIsInByZWZlcnJlZF91c2VybmFtZSI6IndhcXFhcy5hYmR1bGthcmVlbSsxMDBAZ21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6IldhcXFhcyIsImZhbWlseV9uYW1lIjoiU2hlaWtoIiwiZW1haWwiOiJ3YXFxYXMuYWJkdWxrYXJlZW0rMTAwQGdtYWlsLmNvbSJ9.uhrvkkokH7pzkmOeMFixN2O05cip9m9k9Zw4Qwt-zO2c5EU6rdJIL7KDajU3smnMMDrBEZ6DfWnJYOBCso5-tYzRmQ3lPuxJEF0ggRzcjJOjvFkz1bxqoE_xHlEfm_cMu84VCIVaGF8rmsD0fKSUqY1lf9Wsz8PY33ecLED37_0PqPvpwiAvBayQMAn_PoNa8C-yipT01eL0WkC7crQodoYCEhHj6-sCvGskV7qcQihf3q2ojxB6yzIhL1IiNOtihPqpXeg-45RT_N6CtP_uVy8EHWs4Bgvr5v2y46yFuFaON6UktXMZ2PjBrVcQ7MyN4lKfG4bN9tka_JEtnDtWqQ",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "http://localhost:8080/realms/loyalty/protocol/openid-connect/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "http://localhost:8080/realms/loyalty/protocol/openid-connect/auth",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customerId\": \"003J7000004w73aIAA\",\n    \"date\": \"2024-07-21T22:00:00+0300\",\n    \"products\": [\n        {\n            \"id\": \"01u8d00000EkE6zAAF\",\n            \"quantity\": 3.0\n        },\n        {\n            \"id\":\"01u8d00000EkE7LAAV\",\n            \"quantity\":1.0\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/txn",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"txn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign-up",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Gus\",\n    \"lastName\": \"Fring\",\n    \"email\": \"A7B54924-AF54-45A2-A229-76556BC2D427@c.com\",\n    \"mobileNumber\": \"971562445456\",\n    \"password\": \"12345678\",\n    \"birthDate\": \"1988-01-27\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/user/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success Response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Gus\",\n    \"lastName\": \"Fring\",\n    \"email\": \"gustavo@pollos.com\",\n    \"mobileNumber\": \"971562445456\",\n    \"password\": \"12345678\",\n    \"birthDate\": \"1988-01-27\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/user/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"register"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "170"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"aa-VvPaTl/9zG50w2PEKc0yr6K/pbI\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Jul 2024 14:44:14 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"003J7000004w1ePIAQ\",\n    \"firstName\": \"Gus\",\n    \"lastName\": \"Fring\",\n    \"email\": \"gustavo@pollos.com\",\n    \"mobileNumber\": \"971562445456\",\n    \"password\": \"12345678\",\n    \"birthDate\": \"1988-01-27\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Profile",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/user/003J7000004vuEcIAI",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"003J7000004vuEcIAI"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": [
+				{
+					"name": "Products",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/product",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"product"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1590"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"636-yGoPiIwBlajXk4WlUNBzT4n/Nmw\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 25 Jul 2024 12:32:42 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"products\": [\n        {\n            \"id\": \"01u8d00000EkE6zAAF\",\n            \"name\": \"GenWatt Diesel 1000kW\",\n            \"code\": \"GC1060\",\n            \"unitPrice\": 100000\n        },\n        {\n            \"id\": \"01u8d00000EkE6rAAF\",\n            \"name\": \"GenWatt Diesel 200kW\",\n            \"code\": \"GC1040\",\n            \"unitPrice\": 25000\n        },\n        {\n            \"id\": \"01u8d00000EkE6sAAF\",\n            \"name\": \"GenWatt Diesel 10kW\",\n            \"code\": \"GC1020\",\n            \"unitPrice\": 5000\n        },\n        {\n            \"id\": \"01u8d00000EkE6tAAF\",\n            \"name\": \"Installation: Industrial - High\",\n            \"code\": \"IN7080\",\n            \"unitPrice\": 85000\n        },\n        {\n            \"id\": \"01u8d00000EkE6uAAF\",\n            \"name\": \"SLA: Silver\",\n            \"code\": \"SL9040\",\n            \"unitPrice\": 20000\n        },\n        {\n            \"id\": \"01u8d00000EkE6vAAF\",\n            \"name\": \"GenWatt Propane 500kW\",\n            \"code\": \"GC3040\",\n            \"unitPrice\": 50000\n        },\n        {\n            \"id\": \"01u8d00000EkE6wAAF\",\n            \"name\": \"SLA: Platinum\",\n            \"code\": \"SL9080\",\n            \"unitPrice\": 40000\n        },\n        {\n            \"id\": \"01u8d00000EkE6xAAF\",\n            \"name\": \"GenWatt Propane 100kW\",\n            \"code\": \"GC3020\",\n            \"unitPrice\": 15000\n        },\n        {\n            \"id\": \"01u8d00000EkE6yAAF\",\n            \"name\": \"GenWatt Propane 1500kW\",\n            \"code\": \"GC3060\",\n            \"unitPrice\": 120000\n        },\n        {\n            \"id\": \"01u8d00000EkE70AAF\",\n            \"name\": \"SLA: Bronze\",\n            \"code\": \"SL9020\",\n            \"unitPrice\": 10000\n        },\n        {\n            \"id\": \"01u8d00000EkE71AAF\",\n            \"name\": \"GenWatt Gasoline 750kW\",\n            \"code\": \"GC5040\",\n            \"unitPrice\": 75000\n        },\n        {\n            \"id\": \"01u8d00000EkE72AAF\",\n            \"name\": \"Installation: Portable\",\n            \"code\": \"IN7020\",\n            \"unitPrice\": 5000\n        },\n        {\n            \"id\": \"01u8d00000EkE73AAF\",\n            \"name\": \"SLA: Gold\",\n            \"code\": \"SL9060\",\n            \"unitPrice\": 30000\n        },\n        {\n            \"id\": \"01u8d00000EkE74AAF\",\n            \"name\": \"GenWatt Gasoline 300kW\",\n            \"code\": \"GC5020\",\n            \"unitPrice\": 35000\n        },\n        {\n            \"id\": \"01u8d00000EkE75AAF\",\n            \"name\": \"Installation: Industrial - Low\",\n            \"code\": \"IN7040\",\n            \"unitPrice\": 20000\n        },\n        {\n            \"id\": \"01u8d00000EkE76AAF\",\n            \"name\": \"GenWatt Gasoline 2000kW\",\n            \"code\": \"GC5060\",\n            \"unitPrice\": 150000\n        },\n        {\n            \"id\": \"01u8d00000EkE77AAF\",\n            \"name\": \"Installation: Industrial - Medium\",\n            \"code\": \"IN7060\",\n            \"unitPrice\": 50000\n        }\n    ]\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "clientSecret",
+				"value": "yuz1GRD9NuOenMKuMCFKQLxg0wSj4mZp",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "http://localhost:3000/auth/callback",
+				"type": "string"
+			},
+			{
+				"key": "useBrowser",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "tokenType",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "loyalty-client",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code_with_pkce",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "http://localhost:8080/realms/loyalty/protocol/openid-connect/token",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "http://localhost:8080/realms/loyalty/protocol/openid-connect/auth",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "email",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

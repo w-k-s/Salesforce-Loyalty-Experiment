@@ -18,6 +18,7 @@ services:
       RABBITMQ_PASSWORD: guest
       RABBITMQ_HOST: mq
       RABBITMQ_PORT: 5672
+      AUTH_BASE_URL: http://keycloak:8080
       KEYCLOAK_ISSUER_URL: http://keycloak:8080/realms/loyalty
       REDIS_URL: 'redis://redis:6379'
     env_file:

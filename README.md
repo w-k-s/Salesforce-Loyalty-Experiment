@@ -13,6 +13,44 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 
 **Note**: We're using Salesforce events to replicate the transaction history in a relational database store. The idea behind this is to own our own data (rather than rely on a SaaS product for storage). It might also reduce the number of queries to Salesforce resulting in an overall more cost-effective use of a their License. In practice, this could get a little hairy e.g. if events are missed or processed twice.
 
+## Glossary
+
+- **Loyalty Application**: A loyalty application is an application that allows you to take advantage of rewards earned from repeatedly using a service. A good example is Airline Frequent Flyer programmes that offer you benefits for repeatedly travelling with the airline.
+
+- **Loyalty Partners**: A loyalty partner is a company that either expands or enhances the loyalty eco-system. 
+
+    For example; car rental companies could partner with a frequent flyer programme so that you earn miles not only when you fly, but also when you rent a car and drive.
+
+    hotels could enhance the frequent flyer programme by offering a discounted stay in exchange for redeeming miles.
+
+    This project only considers partners that expand the ecosystem. In this respect, partner companies notify the loyalty backend when a transaction occurs so that the programme member earns loyalty currency.
+
+## Migrations
+
+### Create Migration File
+
+```
+npx knex migrate:make create_raffles_table 
+```
+
+## Keycloak
+
+### Importing/Exporting realms
+
+- The following commands were used to export the keycloak realms. These commands were run in the containers, with the output directory mounted to the host machine.
+
+```shell
+docker exec -it keycloak sh
+cd ~/bin
+
+./kc.sh export --realm loyalty --file /tmp/export/loyalty.json --db postgres --db-url jdbc:postgresql://authdb:5432/keycloak --db-username postgres --db-password password
+
+./kc.sh export --realm master --file /tmp/export/master.json --db postgres --db-url jdbc:postgresql://authdb:5432/keycloak --db-username postgres --db-password password
+```
+
+- I think the master realm can't be imported. This means that `docker compose up -d` pretty much spins up everything ready to go, except that admin-cli needs to be configured for signing-up users. See [guide](./backend/docs/keycloak-setup.md#sign-up)
+
+
 ## To Do
 
 - [x] 1. Receive Order Event
@@ -39,12 +77,3 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 - [Add more info to userInfo endpoint](https://stackoverflow.com/questions/75869268/get-roles-from-keycloak-userinfo-endpoint)
 - [OpenID Configuration](http://localhost:8080/realms/loyalty/.well-known/openid-configuration)
 - [NodeJS Redis Cheatsheet](https://redis.js.org/#node-redis-usage-redis-commands)
-
-```shell
-docker exec -it keycloak sh
-cd ~/bin
-
-./kc.sh export --realm loyalty --file /tmp/export/loyalty.json --db postgres --db-url jdbc:postgresql://authdb:5432/keycloak --db-username postgres --db-password password
-
-./kc.sh export --realm master --file /tmp/export/master.json --db postgres --db-url jdbc:postgresql://authdb:5432/keycloak --db-username postgres --db-password password
-```
