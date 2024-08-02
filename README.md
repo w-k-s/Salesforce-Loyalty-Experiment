@@ -19,7 +19,7 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 
 - **Loyalty Partners**: A loyalty partner is a company that either expands or enhances the loyalty eco-system. 
 
-    For example; car rental companies could partner with a frequent flyer programme so that you earn miles not only when you fly, but also when you rent a car and drive.
+    For example; a car rental companies could expand a frequent flyer programme so that you earn miles not only when you fly, but also when you rent a car and drive.
 
     hotels could enhance the frequent flyer programme by offering a discounted stay in exchange for redeeming miles.
 

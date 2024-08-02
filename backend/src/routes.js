@@ -6,4 +6,5 @@ export default ({ app, transactionService, memberService, productService }) => {
     app.use('/api/v1/txn', transactionRoutes(transactionService))
     app.use('/api/v1/user', memberRoutes(memberService))
     app.use('/api/v1/product', productRoutes(productService))
+    app.use('/health', (req, res) => res.status(204).send({}))
 }

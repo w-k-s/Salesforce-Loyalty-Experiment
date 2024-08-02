@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/app.js",
     "migrate": "knex --esm migrate:latest",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
@@ -34,5 +34,9 @@
     "redis": "^4.6.15",
     "salesforce-pubsub-api-client": "^4.1.0",
     "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.7.0",
+    "testcontainers": "^10.10.4"
   }
 }

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   loyalty:
     build:
-      context: backend
+      context: .
       dockerfile: Dockerfile
     container_name: loyalty-api
     ports:
@@ -22,14 +22,22 @@ services:
       KEYCLOAK_ISSUER_URL: http://keycloak:8080/realms/loyalty
       REDIS_URL: 'redis://redis:6379'
     env_file:
-      - backend/.env
+      - .env
     depends_on:
-      - postgres
-      - mq
-      - redis
-      - keycloak
-    restart: always
+      postgres:
+        condition: service_started
+      mq:
+        condition: service_started
+      redis:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
     command: sh -c "npm install && npm install -g knex && knex migrate:latest && npm start"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
 
   postgres:
     image: postgres:15
@@ -59,11 +67,17 @@ services:
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: true
     command: ["start-dev","--db","postgres","--db-url","jdbc:postgresql://authdb:5432/keycloak","--db-username","postgres","--db-password","password","--import-realm"]
     volumes:
       - ./keycloak:/opt/keycloak/data/import
     depends_on:
       - authdb
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/localhost/8080' # https://stackoverflow.com/a/77638224/821110
+      timeout: 30s
+      retries: 5
+
   
   mq:
     image: rabbitmq:3
