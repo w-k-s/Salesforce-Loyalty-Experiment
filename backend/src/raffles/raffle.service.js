@@ -63,7 +63,7 @@ const isRaffleTicketDay = () => {
     const isRaffleWeek = weekNumber % 2 != 0; // If the week is odd, it's probably the 1st/3rd week of a month
     const isDrawDay = new Date().getDay() == 0; // Draw day is sunday
 
-    return true//isRaffleWeek && !isDrawDay
+    return isRaffleWeek && !isDrawDay
 }
 
 const getWeekNumber = (date = new Date()) => {

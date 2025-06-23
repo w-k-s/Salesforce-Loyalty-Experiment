@@ -1,9 +1,8 @@
-export default (productService) => {
-    const { listProducts } = productService
+export default ({loyalty}) => {
 
     const getAll = async (req, res, next) => {
         try {
-            const result = await listProducts();
+            const result = await loyalty.listProducts();
             res.status(200).json({ products: result });
         } catch (e) {
             next(e)

@@ -1,9 +1,8 @@
-export default (transactionService) => {
-  const { createTransaction } = transactionService
+export default ({crm}) => {
 
   const create = async (req, res) => {
     try {
-      const result = await createTransaction({ transaction: req.body });
+      const result = await crm.createTransaction({ transaction: req.body });
       res.status(201).json({ Id: result });
     } catch (e) {
       console.error(e);

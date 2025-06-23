@@ -42,7 +42,7 @@ export const authentication = {
     issuerUrl: process.env.KEYCLOAK_ISSUER_URL
 };
 
-export const SALESFORCE_PRICEBOOK2_ID = '01s8d00000A4LSdAAN'
+
 
 export const { publish, createConsumer } = mq({
     username: process.env.RABBITMQ_USERNAME,

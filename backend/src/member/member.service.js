@@ -1,20 +1,20 @@
 
 const REALM_ROLES_KEY = "registration:realm-roles"
-export default ({ salesforceConnection, authenticationService, cacheSet, cacheGet }) => {
+export default ({ loyalty, authenticationService, cacheSet, cacheGet }) => {
 
     const registerMember = async ({ request }) => {
-        const salesforceCompletionKey = `registration:salesforce:${request.email}`
+        const loyaltyCompletionKey = `registration:loyalty:${request.email}`
         const keycloakCompletionKey = `registration:keycloak:${request.email}`
         try {
-            // Create Contact in Salesforce
-            let id = await cacheGet(salesforceCompletionKey);
+            // Create Contact in Loyalty
+            let id = await cacheGet(loyaltyCompletionKey);
             if (!id) {
 
-                id = await createSalesforceContact({ salesforceConnection, request })
-                await cacheSet(salesforceCompletionKey, id)
+                id = await loyalty.createContact({ request })
+                await cacheSet(loyaltyCompletionKey, id)
             }
 
-            console.log(`Member '${request.email}' registered with Salesforce id '${id}'`)
+            console.log(`Member '${request.email}' registered with id '${id}'`)
 
             // Create User in Keycloak 
             let keycloakId = await cacheGet(keycloakCompletionKey)
@@ -41,53 +41,9 @@ export default ({ salesforceConnection, authenticationService, cacheSet, cacheGe
         }
     }
 
-    const findMemberById = async (id) => {
-        const contacts = await salesforceConnection.sobject("Contact")
-            .select("Id, FirstName, LastName, Birthdate, Email, MobilePhone")
-            .where({ Id: id })
-            .limit(1)
-            .execute();
-
-        if (contacts.length === 0) {
-            throw new Error('Contact not found');
-        }
-
-        const [contact] = contacts;
-        const {
-            FirstName: firstName,
-            LastName: lastName,
-            Birthdate: birthDate,
-            Email: email,
-            MobilePhone: mobileNumber
-        } = contact;
-
-        return {
-            id,
-            firstName,
-            lastName,
-            email,
-            mobileNumber,
-            birthDate: new Date(birthDate)
-        };
-    };
-
     return {
         registerMember,
-        findMemberById
     }
-}
-
-const createSalesforceContact = async ({ salesforceConnection, request }) => {
-    const { id: salesforceId } = await salesforceConnection.sobject("Contact").create({
-        FirstName: request.firstName,
-        MiddleName: request.middleName,
-        LastName: request.lastName,
-        Birthdate: request.birthDate,
-        Email: request.email,
-        //GenderIdentity: request.gender,
-        MobilePhone: request.mobileNumber
-    });
-    return salesforceId
 }
 
 const createUserOnKeycloak = async ({ authenticationService, request, salesforceId }) => {

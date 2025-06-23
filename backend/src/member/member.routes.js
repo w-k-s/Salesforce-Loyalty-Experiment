@@ -4,8 +4,8 @@ import { createMemberSchema } from './member.validation.js';
 import { validate } from '../middleware/index.js'
 import { requiresScope, checkOwner } from '../middleware/authentication.js';
 
-export default (memberService) => {
-    const memberHandlers = handlers(memberService)
+export default ({loyalty, memberService}) => {
+    const memberHandlers = handlers({loyalty,memberService})
 
     const checkResourceOwner = checkOwner({
         userIdProvider: (user) => user.customerId,
