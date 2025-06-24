@@ -1,17 +1,19 @@
-export const createContact = async({salesforceConnection, request}) => {
-        const { id: salesforceId } = await salesforceConnection.sobject("Contact").create({
-            FirstName: request.firstName,
-            MiddleName: request.middleName,
-            LastName: request.lastName,
-            Birthdate: request.birthDate,
-            Email: request.email,
-            //GenderIdentity: request.gender,
-            MobilePhone: request.mobileNumber
-        });
-        return salesforceId
+import { NotFoundError } from 'error';
+
+export const createContact = async ({ salesforceConnection, request }) => {
+    const { id: salesforceId } = await salesforceConnection.sobject("Contact").create({
+        FirstName: request.firstName,
+        MiddleName: request.middleName,
+        LastName: request.lastName,
+        Birthdate: request.birthDate,
+        Email: request.email,
+        //GenderIdentity: request.gender,
+        MobilePhone: request.mobileNumber
+    });
+    return salesforceId
 }
 
-export const findMemberById = async ({salesforceConnection,id}) => {
+export const findMemberById = async ({ salesforceConnection, id }) => {
     const contacts = await salesforceConnection.sobject("Contact")
         .select("Id, FirstName, LastName, Birthdate, Email, MobilePhone")
         .where({ Id: id })
@@ -19,7 +21,7 @@ export const findMemberById = async ({salesforceConnection,id}) => {
         .execute();
 
     if (contacts.length === 0) {
-        throw new Error('Contact not found');
+        throw new NotFoundError('Contact not found');
     }
 
     const [contact] = contacts;

@@ -54,22 +54,4 @@ export const requiresScope = (scope) => {
     }
 }
 
-export const checkOwner = ({ userIdProvider, resourceOwnerIdProvider }) => {
-
-    return (req, res, next) => {
-        if (!req.user) {
-            console.log("Session not created")
-            return res.status(401).send({ "error": "Unauthorized" })
-        }
-        const userId = userIdProvider(req.user)
-        const resourceOwnerId = resourceOwnerIdProvider(req)
-        if (userId != resourceOwnerId) {
-            console.log(`user with id ${userId} can't access resource belonging to ${resourceOwnerId}`)
-            return res.status(403).send({ "error": "Forbidden" })
-        }
-
-        console.log(`user with id ${userId} accessing resource belonging to ${resourceOwnerId}`)
-        next()
-    }
-}
 

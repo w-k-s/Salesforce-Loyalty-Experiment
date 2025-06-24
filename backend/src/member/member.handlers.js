@@ -1,5 +1,5 @@
-export default ({loyalty, memberService}) => {
-  const { registerMember, findMemberById } = memberService
+export default ({ loyalty, memberService }) => {
+  const { registerMember } = memberService
 
   const create = async (req, res, next) => {
     try {
@@ -12,7 +12,7 @@ export default ({loyalty, memberService}) => {
 
   const getById = async (req, res, next) => {
     try {
-      const contactId = req.params.id
+      const contactId = req.user.id
       const result = await loyalty.findMemberById(contactId)
       res.status(200).json(result)
     } catch (e) {

@@ -1,8 +1,8 @@
-export default ({crm}) => {
+export default ({ loyalty }) => {
 
   const create = async (req, res) => {
     try {
-      const result = await crm.createTransaction({ transaction: req.body });
+      const result = await loyalty.createTransaction({ transaction: req.body });
       res.status(201).json({ Id: result });
     } catch (e) {
       console.error(e);

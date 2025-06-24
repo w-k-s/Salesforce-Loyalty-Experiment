@@ -4,8 +4,8 @@ import { createTransactionSchema } from './transactions.validation.js';
 import { validate } from '../middleware/index.js'
 import { requiresScope } from '../middleware/authentication.js';
 
-export default (transactionService) => {
-    const transanctionHandlers = handlers(transactionService)
+export default ({ loyalty }) => {
+    const transanctionHandlers = handlers({ loyalty })
 
     const transactionRoutes = express.Router()
     transactionRoutes.post('/', requiresScope('create-transaction'), validate(createTransactionSchema), transanctionHandlers.create);
