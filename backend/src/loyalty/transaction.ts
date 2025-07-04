@@ -1,18 +1,20 @@
 import { v4 as uuidv4 } from 'uuid';
-import { SALESFORCE_PRICEBOOK2_ID, SALESFORCE_ACCOUNT_ID } from './constants.js'
+import { default as config } from '../config/index.js'
+import { default as salesforceConnection } from './connection.js'
 
+const { salesforce } = config
 
-export const createTransaction = async ({ salesforceConnection, transaction }) => {
+export const createTransaction = async ({ transaction }) => {
     console.log(transaction)
     const { id } = await salesforceConnection.sobject("Order").create({
-        AccountId: SALESFORCE_ACCOUNT_ID,
+        AccountId: salesforce.defaults.accountId,
         BillToContactId: transaction.customerId,
         ShipToContactId: transaction.customerId,
         EffectiveDate: new Date(transaction.date),
         OrderReferenceNumber: uuidv4(),
         Status: 'Draft',
         Description: 'Number',
-        Pricebook2Id: SALESFORCE_PRICEBOOK2_ID
+        Pricebook2Id: salesforce.defaults.pricebook2Id
     });
 
     const productIds = transaction.products.map((p) => p.id)

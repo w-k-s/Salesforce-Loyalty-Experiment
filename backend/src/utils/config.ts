@@ -1,19 +1,9 @@
 import dotenv from 'dotenv';
-import { salesforceLogin } from './salesforce.js';
 import knex from 'knex'
 import cache from './cache.js';
 
 dotenv.config();
 
-const SALESFORCE_USERNAME = process.env.SALESFORCE_USERNAME
-const SALESFORCE_PASSWORD = process.env.SALESFORCE_PASSWORD
-const SALESFORCE_TOKEN = process.env.SALESFORCE_TOKEN
-
-export const salesforceConnection = await salesforceLogin(
-    SALESFORCE_USERNAME,
-    SALESFORCE_PASSWORD,
-    SALESFORCE_TOKEN
-)
 
 const DB_CLIENT = process.env.DB_CLIENT || 'pg'
 const DB_HOST = process.env.DB_HOST || '127.0.0.1'

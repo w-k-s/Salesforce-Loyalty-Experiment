@@ -7,7 +7,6 @@ import { requiresScope } from '../middleware/authentication.js';
 export default ({ loyalty, memberService }) => {
     const memberHandlers = handlers({ loyalty, memberService })
 
-
     const memberRoutes = express.Router()
     memberRoutes.post('/register', validate(createMemberSchema), memberHandlers.create);
     memberRoutes.get('/me', requiresScope('view-profile'), memberHandlers.getById)

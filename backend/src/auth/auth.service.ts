@@ -27,13 +27,13 @@ export default ({
                 'client_id': adminClientId,
                 'client_secret': adminClientSecret
             }
-            let formBody = [];
+            let formParts = [];
             for (var key in form) {
                 var encodedKey = encodeURIComponent(key);
                 var encodedValue = encodeURIComponent(form[key]);
-                formBody.push(encodedKey + "=" + encodedValue);
+                formParts.push(encodedKey + "=" + encodedValue);
             }
-            formBody = formBody.join("&");
+            let formBody = formParts.join("&");
             const response = await fetch(`${baseUrl}/realms/master/protocol/openid-connect/token`, {
                 method: 'post',
                 body: formBody,
@@ -89,7 +89,8 @@ export default ({
                 })
             })
             let json = ''
-            if (response.headers.get("Content-Length") > 0) {
+            const contentLength = response.headers.get("Content-Length");
+            if (contentLength && parseInt(contentLength, 10) > 0) {
                 console.log('parsing json')
                 json = await response.json()
             }
@@ -117,7 +118,9 @@ export default ({
             })
 
             let json = ''
-            if (response.headers.get("Content-Length") > 0) {
+            const contentLength = response.headers.get("Content-Length");
+            if (contentLength && parseInt(contentLength, 10) > 0) {
+                console.log('parsing json')
                 json = await response.json()
             }
             if (!response.ok) {
@@ -145,7 +148,9 @@ export default ({
         })
 
         let json = ''
-        if (response.headers.get("Content-Length") > 0) {
+        const contentLength = response.headers.get("Content-Length");
+        if (contentLength && parseInt(contentLength, 10) > 0) {
+            console.log('parsing json')
             json = await response.json()
         }
         if (!response.ok) {
@@ -172,7 +177,9 @@ export default ({
 
         if (!success) {
             let json = ''
-            if (response.headers.get("Content-Length") > 0) {
+            const contentLength = response.headers.get("Content-Length");
+            if (contentLength && parseInt(contentLength, 10) > 0) {
+                console.log('parsing json')
                 json = await response.json()
             }
             throw new Error(`${response.statusText} - ${JSON.stringify(json)}`);

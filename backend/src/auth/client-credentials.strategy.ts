@@ -57,7 +57,7 @@ Strategy.prototype.authenticate = async function (req) {
                     console.log(`Failed to retrieve key with id '${header.kid}'`)
                     callback(err, null);
                 } else {
-                    var signingKey = key.publicKey || key.rsaPublicKey;
+                    var signingKey = undefined //key.publicKey || key.rsaPublicKey;
                     callback(null, signingKey);
                 }
 

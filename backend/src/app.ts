@@ -2,26 +2,23 @@ import express from 'express';
 import routes from './routes.js'
 import { errorResponse } from './middleware/errors.js';
 
-import { salesforceConnection, db, authentication, cacheSet, cacheGet } from './utils/config.js'
+import { db, authentication, cacheSet, cacheGet } from './utils/config.js'
 import bodyParser from 'body-parser';
 
 import TransactionService from './transactions/transactions.service.js';
 import MemberService from './member/member.service.js';
 import AuthenticationService from './auth/auth.service.js'
-import { TransactionEmitter, default as LoyaltyService } from './loyalty/index.js';
-import { config } from './config/mq.js';
+import { TransactionEmitter as loyaltyTxnEmitter, default as loyalty } from './loyalty/index.js';
+import { default as config } from './config/index.js';
 import mqService from './mq/mq.js';
+
+const { mq } = config;
 
 const app = express()
 const port = 3000
 
 app.use(bodyParser.json())
 app.use(errorResponse)
-
-const loyaltyTxnEmitter = new TransactionEmitter({ salesforceConnection });
-await loyaltyTxnEmitter.initialize();
-
-const loyalty = LoyaltyService({ salesforceConnection })
 
 const transactionService = TransactionService({ loyaltyTxnEmitter, db })
 const authenticationService = AuthenticationService(authentication, cacheSet, cacheGet)
@@ -32,7 +29,7 @@ async function initializeRabbitMQ() {
     await mqService.connect();
 
     await mqService.consume(
-      config.queues.OUT_OF_ORDER_TXNS.name,
+      mq.queues.OUT_OF_ORDER_TXNS.name,
       transactionService.processTransaction.bind(transactionService),
       {
         prefetch: 1,
@@ -49,7 +46,6 @@ async function initializeRabbitMQ() {
 routes({
   app,
   loyalty,
-  transactionService,
   memberService,
 })
 
@@ -57,6 +53,7 @@ routes({
 app.listen(port, async () => {
   console.log(`Loyalty Backend listening on port ${port}`)
   await initializeRabbitMQ();
+  await loyaltyTxnEmitter.initialize();
 })
 
 process.on('SIGINT', async () => {

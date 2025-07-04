@@ -1,9 +1,13 @@
-import { SALESFORCE_PRICEBOOK2_ID } from './constants.js'
+import { default as config } from '../config/index.js'
+import { default as salesforceConnection } from './connection.js'
+import { type Product } from './types.js'
 
-export const listProducts = async ({ salesforceConnection }) => {
+const { salesforce } = config
+
+export const listProducts = async (): Promise<Product[]> => {
     const products = await salesforceConnection.sobject("PricebookEntry")
         .select("Id, Name, Pricebook2Id, UnitPrice, ProductCode")
-        .where({ Pricebook2Id: SALESFORCE_PRICEBOOK2_ID })
+        .where({ Pricebook2Id: salesforce.defaults.pricebook2Id })
         .limit(200)
         .execute();
 
@@ -17,6 +21,6 @@ export const listProducts = async ({ salesforceConnection }) => {
             name: product.Name,
             code: product.ProductCode,
             unitPrice: product.UnitPrice,
-        }
+        } as Product
     })
 }

@@ -1,6 +1,9 @@
 import transactionDao from './transactions.data.js'
 import raffleService from '../raffles/raffle.service.js';
 import mqService from '../mq/mq.js'
+import { default as config } from '../config/index.js'
+
+const { mq } = config
 
 export default ({ loyaltyTxnEmitter, db }) => {
     const { saveTransaction, updateTransaction, findTransactionById } = transactionDao(db)
@@ -12,10 +15,8 @@ export default ({ loyaltyTxnEmitter, db }) => {
     });
 
     loyaltyTxnEmitter.on('update', async (transaction) => {
-        await outOfOrderQueue.publish(transaction)
-
         await mqService.publishToQueue(
-            config.queues.OUT_OF_ORDER_TRANSACTIONS.name,
+            mq.queues.OUT_OF_ORDER_TXNS.name,
             transaction
         );
     });

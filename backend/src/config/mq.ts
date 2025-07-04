@@ -1,14 +1,15 @@
-export const config = {
+import { RabbitMQConfig } from './types'
+
+export default {
     connection: {
         protocol: 'amqp',
         hostname: process.env.RABBITMQ_HOST || 'localhost',
-        port: process.env.RABBITMQ_PORT || 5672,
+        port: parseInt(process.env.RABBITMQ_PORT || '5672', 10),
         username: process.env.RABBITMQ_USER || 'guest',
         password: process.env.RABBITMQ_PASS || 'guest',
         vhost: process.env.RABBITMQ_VHOST || '/',
         heartbeat: 60
     },
-
     queues: {
         OUT_OF_ORDER_TXNS: {
             name: 'out-of-order-transactions',
@@ -23,9 +24,8 @@ export const config = {
                     'x-dead-letter-routing-key': 'failed.transactions'
                 }
             }
-        },
+        }
     },
-
     exchanges: {
         NOTIFICATIONS: {
             name: 'notifications.exchange',
@@ -42,4 +42,4 @@ export const config = {
             }
         }
     }
-};
+} as RabbitMQConfig;

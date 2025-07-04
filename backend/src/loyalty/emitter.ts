@@ -1,19 +1,20 @@
 import PubSubApiClient from 'salesforce-pubsub-api-client';
 import { EventEmitter } from 'events';
+import { type Connection } from 'jsforce';
+import { default as salesforceConnection } from './connection.js'
 
-export class TransactionEmitter {
-    constructor({
-        salesforceConnection,
-    }) {
-        this._salesforceConnection = salesforceConnection;
-        this._emitter = new EventEmitter();
-        this._client = null;
-        this._initialized = false;
+class TransactionEmitter {
+    private _emitter: EventEmitter = new EventEmitter();
+    private _client: PubSubApiClient | null = null;
+    private _initialized: boolean = false
+
+    constructor(
+        private readonly _salesforceConnection: Connection
+    ) {
     }
 
     async initialize() {
         if (!this._initialized) {
-
             this._client = new PubSubApiClient({
                 authType: 'user-supplied',
                 accessToken: this._salesforceConnection.accessToken,
@@ -108,3 +109,5 @@ export class TransactionEmitter {
         return this._emitter.removeListener(event, listener);
     }
 }
+
+export default new TransactionEmitter(salesforceConnection)

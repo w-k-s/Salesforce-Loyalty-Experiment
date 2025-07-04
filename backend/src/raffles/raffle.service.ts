@@ -66,18 +66,14 @@ const isRaffleTicketDay = () => {
     return isRaffleWeek && !isDrawDay
 }
 
-const getWeekNumber = (date = new Date()) => {
+const getWeekNumber = (date: Date = new Date()): number => {
     // Create a copy of the date object
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-
     // Set to the nearest Thursday: current date + 4 - current day number (adjust for the week's start on Monday)
     d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-
     // Get the first day of the year
     const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-
     // Calculate the full weeks to the nearest Thursday
-    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-
+    const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
     return weekNo;
 };

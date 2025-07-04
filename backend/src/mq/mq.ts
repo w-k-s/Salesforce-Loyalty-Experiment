@@ -1,16 +1,18 @@
 import amqp from 'amqplib';
-import { config } from '../config/mq.js';
+import { default as config } from '../config/index.js';
+
+const { mq } = config
 
 class MQService {
-    constructor() {
-        this.connection = null;
-        this.channel = null;
-        this.isConnected = false;
-    }
+    constructor(
+        private connection: any | null = null,
+        private channel: any | null = null,
+        private isConnected: boolean = false
+    ) { }
 
     async connect() {
         try {
-            this.connection = await amqp.connect(config.connection);
+            this.connection = await amqp.connect(mq.connection);
             this.channel = await this.connection.createChannel();
             this.isConnected = true;
 
@@ -44,8 +46,8 @@ class MQService {
     async setupInfrastructure() {
         try {
             // Create exchanges only if defined
-            if (config.exchanges) {
-                for (const [key, exchange] of Object.entries(config.exchanges)) {
+            if (mq.exchanges) {
+                for (const [key, exchange] of Object.entries(mq.exchanges)) {
                     await this.channel.assertExchange(
                         exchange.name,
                         exchange.type,
@@ -56,7 +58,7 @@ class MQService {
             }
 
             // Create queues
-            for (const [key, queue] of Object.entries(config.queues)) {
+            for (const [key, queue] of Object.entries(mq.queues)) {
                 await this.channel.assertQueue(queue.name, queue.options);
                 console.log(`Queue '${queue.name}' created/verified`);
             }

@@ -1,6 +1,7 @@
 import { NotFoundError } from '../errors/index.js';
+import { default as salesforceConnection } from './connection.js'
 
-export const createContact = async ({ salesforceConnection, request }) => {
+export const createContact = async ({ request }) => {
     const { id: salesforceId } = await salesforceConnection.sobject("Contact").create({
         FirstName: request.firstName,
         MiddleName: request.middleName,
@@ -13,7 +14,7 @@ export const createContact = async ({ salesforceConnection, request }) => {
     return salesforceId
 }
 
-export const findMemberById = async ({ salesforceConnection, id }) => {
+export const findMemberById = async ({ id }) => {
     const contacts = await salesforceConnection.sobject("Contact")
         .select("Id, FirstName, LastName, Birthdate, Email, MobilePhone")
         .where({ Id: id })
