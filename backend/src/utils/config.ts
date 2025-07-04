@@ -1,9 +1,5 @@
-import dotenv from 'dotenv';
+
 import knex from 'knex'
-import cache from './cache.js';
-
-dotenv.config();
-
 
 const DB_CLIENT = process.env.DB_CLIENT || 'pg'
 const DB_HOST = process.env.DB_HOST || '127.0.0.1'
@@ -31,6 +27,3 @@ export const authentication = {
     issuerUrl: process.env.KEYCLOAK_ISSUER_URL
 };
 
-export const { set: cacheSet, get: cacheGet } = await cache({
-    connectionUrl: process.env.REDIS_URL
-})

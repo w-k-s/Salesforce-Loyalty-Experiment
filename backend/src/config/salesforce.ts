@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { SalesforceConnection, SalesforceConfig, SalesforceDefaults } from './types.js';
 
 export default {

@@ -69,3 +69,12 @@ export interface RabbitMQConfig {
         ORDERS: Exchange;
     };
 }
+
+export interface CacheConnection {
+    url: string,
+}
+
+export interface CacheConfig {
+    connection: CacheConnection,
+    useLocal: boolean
+}

@@ -1,15 +1,17 @@
+import { default as config } from './config/index.js';
+
 import express from 'express';
 import routes from './routes.js'
 import { errorResponse } from './middleware/errors.js';
 
-import { db, authentication, cacheSet, cacheGet } from './utils/config.js'
+import { db, authentication } from './utils/config.js'
 import bodyParser from 'body-parser';
 
 import TransactionService from './transactions/transactions.service.js';
 import MemberService from './member/member.service.js';
 import AuthenticationService from './auth/auth.service.js'
 import { TransactionEmitter as loyaltyTxnEmitter, default as loyalty } from './loyalty/index.js';
-import { default as config } from './config/index.js';
+
 import mqService from './mq/mq.js';
 
 const { mq } = config;
@@ -21,8 +23,8 @@ app.use(bodyParser.json())
 app.use(errorResponse)
 
 const transactionService = TransactionService({ loyaltyTxnEmitter, db })
-const authenticationService = AuthenticationService(authentication, cacheSet, cacheGet)
-const memberService = MemberService({ loyalty, authenticationService, cacheSet, cacheGet })
+const authenticationService = AuthenticationService(authentication)
+const memberService = MemberService({ loyalty, authenticationService })
 
 async function initializeRabbitMQ() {
   try {

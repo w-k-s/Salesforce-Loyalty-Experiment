@@ -1,3 +1,7 @@
+import { default as cache } from '../cache/index.js'
+
+const { get: cacheGet, set: cacheSet } = cache
+
 const CACHE_KEY_REALM_ROLES = "authentication:realm-roles"
 /**
  * Creates an Authentication Service
@@ -6,18 +10,13 @@ const CACHE_KEY_REALM_ROLES = "authentication:realm-roles"
  * @param {string} authConfig.userRealm keycloak User realm
  * @param {string} authConfig.adminClientId Keycloak Client ID
  * @param {string} authConfig.adminClientSecret Keycloak Client Secret
- * @param {function} cacheSet 
- * @param {function} cacheGet
  */
 export default ({
     baseUrl,
     userRealm,
     adminClientId,
     adminClientSecret,
-},
-    cacheSet,
-    cacheGet
-) => {
+}) => {
 
     const getAdminToken = async () => {
         // supposed to be a cache access with ttl = token expiry
