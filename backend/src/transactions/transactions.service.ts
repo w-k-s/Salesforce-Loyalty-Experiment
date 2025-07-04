@@ -1,13 +1,11 @@
-import transactionDao from './transactions.data.js'
-import raffleService from '../raffles/raffle.service.js';
-import mqService from '../mq/mq.js'
+import { saveTransaction, updateTransaction, findTransactionById } from './transactions.data.js'
+import { issueRaffleTickets } from '../raffles/raffle.service.js';
+import mqService from '../mq/index.js'
 import { default as config } from '../config/index.js'
 
 const { mq } = config
 
-export default ({ loyaltyTxnEmitter, db }) => {
-    const { saveTransaction, updateTransaction, findTransactionById } = transactionDao(db)
-    const { issueRaffleTickets } = raffleService(db)
+export default ({ loyaltyTxnEmitter }) => {
 
     loyaltyTxnEmitter.on('create', async (transaction) => {
         await saveTransaction(transaction);

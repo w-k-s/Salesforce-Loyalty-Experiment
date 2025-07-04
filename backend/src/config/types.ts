@@ -78,3 +78,24 @@ export interface CacheConfig {
     connection: CacheConnection,
     useLocal: boolean
 }
+
+export interface Sqlite3Connection {
+    filename: string
+}
+
+export interface PgConnection {
+    host: string
+    port: number
+    user: string
+    password: string
+    database: string
+}
+
+export interface DatabaseConnection {
+    client: 'sqlite3' | 'pg',
+    connection: Sqlite3Connection | PgConnection
+}
+
+export interface DatabaseConfig {
+    connection: DatabaseConnection
+}

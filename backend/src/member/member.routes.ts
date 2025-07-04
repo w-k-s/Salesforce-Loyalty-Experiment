@@ -4,8 +4,8 @@ import { createMemberSchema } from './member.validation.js';
 import { validate } from '../middleware/index.js'
 import { requiresScope } from '../middleware/authentication.js';
 
-export default ({ loyalty, memberService }) => {
-    const memberHandlers = handlers({ loyalty, memberService })
+export default ({ memberService }) => {
+    const memberHandlers = handlers({ memberService })
 
     const memberRoutes = express.Router()
     memberRoutes.post('/register', validate(createMemberSchema), memberHandlers.create);

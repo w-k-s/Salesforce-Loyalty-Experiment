@@ -1,4 +1,6 @@
-export default ({ loyalty, memberService }) => {
+import loyalty from "../loyalty/index.js";
+
+export default ({ memberService }) => {
   const { registerMember } = memberService
 
   const create = async (req, res, next) => {

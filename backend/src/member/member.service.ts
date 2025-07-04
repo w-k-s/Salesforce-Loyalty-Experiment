@@ -1,9 +1,10 @@
-import { default as cache } from '../cache/index.js'
+import cache from '../cache/index.js'
+import loyalty from '../loyalty/index.js'
 
 const { get: cacheGet, set: cacheSet } = cache
 
 const REALM_ROLES_KEY = "registration:realm-roles"
-export default ({ loyalty, authenticationService }) => {
+export default ({ authenticationService }) => {
 
     const registerMember = async ({ request }) => {
         const loyaltyCompletionKey = `registration:loyalty:${request.email}`
