@@ -29,6 +29,7 @@ export async function salesforceLogin(
             }
         }
     });
-    await salesforceConnection.login(username, passwordWithSecurityToken);
+    const userInfo = await salesforceConnection.login(username, passwordWithSecurityToken);
+    console.log(userInfo.organizationId)
     return salesforceConnection
 }

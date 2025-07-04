@@ -42,15 +42,6 @@ export const authentication = {
     issuerUrl: process.env.KEYCLOAK_ISSUER_URL
 };
 
-
-
-export const { publish, createConsumer } = mq({
-    username: process.env.RABBITMQ_USERNAME,
-    password: process.env.RABBITMQ_PASSWORD,
-    host: process.env.RABBITMQ_HOST,
-    port: process.env.RABBITMQ_PORT
-})
-
 export const { set: cacheSet, get: cacheGet } = await cache({
     connectionUrl: process.env.REDIS_URL
 })

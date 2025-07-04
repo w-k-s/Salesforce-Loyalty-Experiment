@@ -1,4 +1,4 @@
-import { NotFoundError } from 'error';
+import { NotFoundError } from '../errors/index.js';
 
 export const createContact = async ({ salesforceConnection, request }) => {
     const { id: salesforceId } = await salesforceConnection.sobject("Contact").create({

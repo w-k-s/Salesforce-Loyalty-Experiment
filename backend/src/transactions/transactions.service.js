@@ -1,7 +1,8 @@
 import transactionDao from './transactions.data.js'
 import raffleService from '../raffles/raffle.service.js';
+import mqService from '../mq/mq.js'
 
-export default ({ loyaltyTxnEmitter, db, outOfOrderQueue }) => {
+export default ({ loyaltyTxnEmitter, db }) => {
     const { saveTransaction, updateTransaction, findTransactionById } = transactionDao(db)
     const { issueRaffleTickets } = raffleService(db)
 
@@ -12,24 +13,33 @@ export default ({ loyaltyTxnEmitter, db, outOfOrderQueue }) => {
 
     loyaltyTxnEmitter.on('update', async (transaction) => {
         await outOfOrderQueue.publish(transaction)
-    })
 
-    outOfOrderQueue.consumer.on('data', (payload, ack, nack) => {
+        await mqService.publishToQueue(
+            config.queues.OUT_OF_ORDER_TRANSACTIONS.name,
+            transaction
+        );
+    });
+
+    const processTransaction = async (messageContent, msg) => {
         try {
-            if (onTransactionUpdated(payload)) {
-                // update processed
-                console.log(`Update processed: ${payload.id}`)
-                ack()
+            console.log(`Processing out-of-order transaction: ${messageContent.id}`);
+
+            if (await onTransactionUpdated(messageContent)) {
+                // Update processed successfully
+                console.log(`Update processed: ${messageContent.id}`);
+                // Message will be automatically acknowledged by the mqService
             } else {
-                // update stale of transaction create event not received
-                console.log(`Update not processed: ${payload.id}`)
-                nack()
+                // Update stale or transaction create event not received
+                console.log(`Update not processed: ${messageContent.id}`);
+                // Throw error to trigger retry mechanism
+                throw new Error(`Transaction update not processed: ${messageContent.id}`);
             }
-        } catch (e) {
-            console.log(`Failed to process out-of-order transaction ${payload}.`, e)
-            nack()
+        } catch (error) {
+            console.log(`Failed to process out-of-order transaction ${messageContent.id}:`, error);
+            // Re-throw to let mqService handle retries and dead letter queue
+            throw error;
         }
-    })
+    }
 
 
     const onTransactionUpdated = async (event) => {
@@ -46,4 +56,7 @@ export default ({ loyaltyTxnEmitter, db, outOfOrderQueue }) => {
         return updated
     }
 
+    return {
+        processTransaction,
+    };
 }

@@ -1,7 +1,7 @@
 import { createContact, findMemberById } from './contact.js';
 import { TransactionEmitter } from './emitter.js';
 import { listProducts } from './product.js';
-import { createTransaction } from './transactionService.js';
+import { createTransaction } from './transaction.js';
 
 export { TransactionEmitter };
 

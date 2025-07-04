@@ -19,6 +19,8 @@ services:
       AUTH_BASE_URL: http://keycloak:8080
       KEYCLOAK_ISSUER_URL: http://keycloak:8080/realms/loyalty
       REDIS_URL: 'redis://redis:6379'
+      SALESFORCE_AUTH_TYPE: username-password
+      PUB_SUB_ENDPOINT: api.pubsub.salesforce.com:7443
     env_file:
       - .env
     depends_on:
