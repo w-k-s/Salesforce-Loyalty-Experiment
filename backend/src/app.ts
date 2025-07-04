@@ -10,7 +10,7 @@ import { authentication } from './utils/config.js'
 import mqService from './mq/index.js';
 import db from './db/index.js'
 
-import TransactionService from './transactions/transactions.service.js';
+import { processTransaction, onTransactionCreated, onTransactionUpdated } from './transactions/transactions.service.js';
 import MemberService from './member/member.service.js';
 import AuthenticationService from './auth/auth.service.js'
 import { TransactionEmitter as loyaltyTxnEmitter } from './loyalty/index.js';
@@ -23,7 +23,6 @@ const port = 3000
 app.use(bodyParser.json())
 app.use(errorResponse)
 
-const transactionService = TransactionService({ loyaltyTxnEmitter })
 const authenticationService = AuthenticationService(authentication)
 const memberService = MemberService({ authenticationService })
 
@@ -44,7 +43,7 @@ async function initializeRabbitMQ() {
 
     await mqService.consume(
       mq.queues.OUT_OF_ORDER_TXNS.name,
-      transactionService.processTransaction.bind(transactionService),
+      processTransaction,
       {
         prefetch: 1,
         maxRetries: 3
@@ -56,6 +55,9 @@ async function initializeRabbitMQ() {
   }
 }
 
+
+loyaltyTxnEmitter.on('create', onTransactionCreated);
+loyaltyTxnEmitter.on('update', onTransactionUpdated);
 
 routes({
   app,

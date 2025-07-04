@@ -1,4 +1,4 @@
-import { default as cache } from '../cache/index.js'
+import cache from '../cache/index.js'
 
 const { get: cacheGet, set: cacheSet } = cache
 
