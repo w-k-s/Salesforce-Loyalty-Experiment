@@ -1,6 +1,6 @@
-const SALESFORCE_PRICEBOOK2_ID = '01s8d00000A4LSdAAN'
+import { SALESFORCE_PRICEBOOK2_ID } from './constants.js'
 
-export const listProducts = async ({salesforceConnection}) => {
+export const listProducts = async ({ salesforceConnection }) => {
     const products = await salesforceConnection.sobject("PricebookEntry")
         .select("Id, Name, Pricebook2Id, UnitPrice, ProductCode")
         .where({ Pricebook2Id: SALESFORCE_PRICEBOOK2_ID })

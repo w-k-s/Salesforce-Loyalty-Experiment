@@ -10,6 +10,6 @@ export default ({ salesforceConnection }) => {
     createContact: (params) => createContact({ salesforceConnection, params }),
     findMemberById: (id) => findMemberById({ salesforceConnection, id }),
     listProducts: () => listProducts({ salesforceConnection }),
-    createTransaction: (transaction) => createTransaction({ salesforceConnection, transaction })
+    createTransaction: ({ transaction }) => createTransaction({ salesforceConnection, transaction })
   };
 };

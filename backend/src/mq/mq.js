@@ -67,13 +67,13 @@ class MQService {
             await this.channel.bindQueue('failed.transactions', 'dlx.transactions', 'failed.transactions');
 
             // Optional: Bind queues to exchanges if both exist
-            if (config.exchanges && config.exchanges.NOTIFICATIONS) {
-                await this.channel.bindQueue(
-                    config.queues.USER_NOTIFICATIONS.name,
-                    config.exchanges.NOTIFICATIONS.name,
-                    'user.*'
-                );
-            }
+            // if (config.exchanges && config.exchanges.NOTIFICATIONS) {
+            //     await this.channel.bindQueue(
+            //         config.queues.USER_NOTIFICATIONS.name,
+            //         config.exchanges.NOTIFICATIONS.name,
+            //         'user.*'
+            //     );
+            // }
 
         } catch (error) {
             console.error('Failed to setup RabbitMQ infrastructure:', error);

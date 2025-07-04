@@ -1,6 +1,9 @@
-const SALESFORCE_ACCOUNT_ID = '0018d00000joJXIAA2';
+import { v4 as uuidv4 } from 'uuid';
+import { SALESFORCE_PRICEBOOK2_ID, SALESFORCE_ACCOUNT_ID } from './constants.js'
 
-export const createTransaction = async({transaction}) =>{
+
+export const createTransaction = async ({ salesforceConnection, transaction }) => {
+    console.log(transaction)
     const { id } = await salesforceConnection.sobject("Order").create({
         AccountId: SALESFORCE_ACCOUNT_ID,
         BillToContactId: transaction.customerId,

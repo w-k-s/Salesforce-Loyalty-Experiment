@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import { salesforceLogin } from './salesforce.js';
 import knex from 'knex'
-import mq from './mq.js'
 import cache from './cache.js';
 
 dotenv.config();

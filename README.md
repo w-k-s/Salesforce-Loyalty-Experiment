@@ -50,6 +50,12 @@ cd ~/bin
 
 - I think the master realm can't be imported. This means that `docker compose up -d` pretty much spins up everything ready to go, except that admin-cli needs to be configured for signing-up users. See [guide](./backend/docs/keycloak-setup.md#sign-up)
 
+## Salesforce
+
+Salesforce events are triggered through Change Data Capture. The setup is shown below:
+
+![Salesforce CDC](./backend/docs/media/Salesforce-CDC-Setup.png)
+
 
 ## To Do
 
