@@ -8,9 +8,11 @@ export * from './types.js'
 
 export { TransactionEmitter };
 
-export default {
+const crm: LoyaltyCRM = {
   createContact,
   findMemberById,
   listProducts,
   createTransaction
-} satisfies LoyaltyCRM
+}
+
+export default crm

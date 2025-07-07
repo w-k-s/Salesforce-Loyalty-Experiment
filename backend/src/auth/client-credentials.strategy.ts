@@ -32,54 +32,96 @@ util.inherits(Strategy, passport.Strategy);
 /**
  * Authenticate request based on client credentials in the request body.
  *
- * @param {Object} req
+ * @param {Object} req - The HTTP request object.
  * @api protected
+ * 
+ * Sample decoded JWT payload:
+ * 
+ * ```json
+ * {
+ *   "exp": 1751916702,
+ *   "iat": 1751916402,
+ *   "jti": "235fcdfa-35d2-4426-93cb-56a56da52ec2",
+ *   "iss": "http://localhost:8080/realms/loyalty",
+ *   "aud": "account",
+ *   "sub": "8b6a99f5-ae78-4be6-9a0e-ef53cc414083",
+ *   "typ": "Bearer",
+ *   "azp": "loyalty-client",
+ *   "sid": "55648008-11fc-4122-868a-d95171a15da4",
+ *   "acr": "1",
+ *   "allowed-origins": [
+ *     "http://localhost:3000"
+ *   ],
+ *   "realm_access": {
+ *     "roles": [
+ *       "offline_access",
+ *       "loyalty-member",
+ *       "default-roles-loyalty",
+ *       "uma_authorization",
+ *       "view-profile"
+ *     ]
+ *   },
+ *   "resource_access": {
+ *     "account": {
+ *       "roles": [
+ *         "manage-account",
+ *         "manage-account-links",
+ *         "view-profile"
+ *       ]
+ *     }
+ *   },
+ *   "scope": "profile email",
+ *   "email_verified": true,
+ *   "name": "John Doe",
+ *   "customerId": "003gL00000721XAQAY",
+ *   "preferred_username": "john20250707190156@doe.com",
+ *   "given_name": "John",
+ *   "family_name": "Doe",
+ *   "email": "john20250707190156@doe.com"
+ * }
+ * ```
  */
 Strategy.prototype.authenticate = async function (req) {
-    const authorization = req.headers.authorization
+    const authorization = req.headers.authorization;
 
     if (!authorization) {
-        console.log("Authorization header not found")
+        console.log("Authorization header not found");
         return this.fail();
     }
 
     try {
-
-        var client = jwksClient({
+        const client = jwksClient({
             cache: true,
             cacheMaxEntries: 5,
-            cacheMaxAge: 600000, // 10m
-            jwksUri: this.options.jwksUri
+            cacheMaxAge: 600000, // 10 minutes
+            jwksUri: this.options.jwksUri,
         });
 
         function getKey(header, callback) {
             client.getSigningKey(header.kid, function (err, key: any) {
                 if (err) {
-                    console.log(`Failed to retrieve key with id '${header.kid}'`)
-                    callback(err, null);
-                } else {
-                    var signingKey = key.publicKey || key.rsaPublicKey;
-                    callback(null, signingKey);
+                    console.log(`Failed to retrieve key with id '${header.kid}'`);
+                    return callback(err, null);
                 }
-
+                const signingKey = key.publicKey || key.rsaPublicKey;
+                callback(null, signingKey);
             });
         }
 
         const self = this;
         function verified(err, client, info) {
-            if (err) { return self.error(err); }
-            if (!client) { return self.fail(); }
+            if (err) return self.error(err);
+            if (!client) return self.fail();
             self.success(client, info);
         }
 
-        const [_, token] = authorization.split(" ")
+        const [, token] = authorization.split(" ");
 
         jwt.verify(token, getKey, function (err, decoded) {
-            console.log(JSON.stringify(decoded))
+            console.log(JSON.stringify(decoded));
             self._verify(decoded, verified);
-        })
-
+        });
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
-}
+};

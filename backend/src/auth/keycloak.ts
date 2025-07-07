@@ -42,11 +42,6 @@ export const createUser = async (user: CreateUserRequest): Promise<User | 'USER_
 
     await updateUserRoles(userRep.id, realmRoles.filter((role) => ['view-profile', 'loyalty-member'].includes(role.name)))
 
-    userRep = await getKeycloakUserByEmail(user.email)
-    if (userRep === 'NOT_FOUND') {
-        throw new Error('Failed to find user');
-    }
-
     return userRepToUser(userRep)
 };
 

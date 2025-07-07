@@ -6,8 +6,6 @@ export interface UserRepresentation {
     email: string
     emailVerified: boolean
     attributes?: Record<string, any[]>
-    realmRoles?: string[]
-    clientRoles?: string[]
 }
 
 export interface RoleRepresentation {
