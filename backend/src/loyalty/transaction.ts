@@ -1,19 +1,20 @@
 import { v4 as uuidv4 } from 'uuid';
 import { default as config } from '../config/index.js'
 import { default as salesforceConnection } from './connection.js'
+import { CreateTransactionJournal, TransactionId } from './types.js';
 
 const { salesforce } = config
 
-export const createTransaction = async ({ transaction }) => {
+export const createTransaction = async (transaction: CreateTransactionJournal): Promise<TransactionId> => {
     console.log(transaction)
     const { id } = await salesforceConnection.sobject("Order").create({
         AccountId: salesforce.defaults.accountId,
-        BillToContactId: transaction.customerId,
-        ShipToContactId: transaction.customerId,
-        EffectiveDate: new Date(transaction.date),
+        BillToContactId: transaction.contactId,
+        ShipToContactId: transaction.contactId,
+        EffectiveDate: transaction.date,
         OrderReferenceNumber: uuidv4(),
         Status: 'Draft',
-        Description: 'Number',
+        Description: transaction.description,
         Pricebook2Id: salesforce.defaults.pricebook2Id
     });
 

@@ -5,14 +5,11 @@ import routes from './routes.js'
 import bodyParser from 'body-parser';
 
 import { errorResponse } from './middleware/errors.js';
-import { authentication } from './utils/config.js'
 
 import mqService from './mq/index.js';
 import db from './db/index.js'
 
 import { processTransaction, onTransactionCreated, onTransactionUpdated } from './transactions/transactions.service.js';
-import MemberService from './member/member.service.js';
-import AuthenticationService from './auth/auth.service.js'
 import { TransactionEmitter as loyaltyTxnEmitter } from './loyalty/index.js';
 
 const { mq } = config;
@@ -22,9 +19,7 @@ const port = 3000
 
 app.use(bodyParser.json())
 app.use(errorResponse)
-
-const authenticationService = AuthenticationService(authentication)
-const memberService = MemberService({ authenticationService })
+routes(app)
 
 async function runMigrations() {
   try {
@@ -55,15 +50,8 @@ async function initializeRabbitMQ() {
   }
 }
 
-
 loyaltyTxnEmitter.on('create', onTransactionCreated);
 loyaltyTxnEmitter.on('update', onTransactionUpdated);
-
-routes({
-  app,
-  memberService,
-})
-
 
 app.listen(port, async () => {
   console.log(`Loyalty Backend listening on port ${port}`)

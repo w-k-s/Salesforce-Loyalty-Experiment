@@ -1,17 +1,22 @@
-import { authentication, cacheSet, cacheGet } from "../utils/config.js";
+import config from "../config/index.js";
 import passport from "passport";
-//import { Issuer } from "openid-client"
+import cache from '../cache/index.js'
+
+const { get: cacheGet, set: cacheSet } = cache
+const { auth } = config
+
+import { Issuer } from "openid-client"
 import { Strategy } from '../auth/client-credentials.strategy.js'
 
-// const issuer = await Issuer.discover(authentication.issuerUrl)
-// passport.use('oauth2', new Strategy({
-//     jwksUri: issuer.jwks_uri,
-//     cacheSet,
-//     cacheGet,
-// }, (userInfo, done) => {
-//     console.log('oauth2', userInfo);
-//     return done(null, userInfo);
-// }))
+const issuer = await Issuer.discover(authentication.issuerUrl)
+passport.use('oauth2', new Strategy({
+    jwksUri: issuer.jwks_uri,
+    cacheSet,
+    cacheGet,
+}, (userInfo, done) => {
+    console.log('oauth2', userInfo);
+    return done(null, userInfo);
+}))
 
 export const requiresAuthentication = (req, res, next) => {
 

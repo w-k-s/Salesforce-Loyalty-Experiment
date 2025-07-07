@@ -4,5 +4,5 @@ export default {
     connection: {
         url: process.env.REDIS_URL || 'redis://localhost:6379'
     },
-    useLocal: process.env.USE_LOCAL_CACHE || true
+    useLocal: process.env.USE_LOCAL_CACHE == 'true' || true
 } as CacheConfig;

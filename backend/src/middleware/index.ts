@@ -1,15 +1,16 @@
-export const validate = (schema) => {
-    return (req, res, next) => {
-        const { error, _ } = schema.validate(req.body);
-        if (error) {
-            console.log('error', error)
-            return res.status(400).send({
-                result: error.details[0].message
-            });
-        }
-        next()
-    }
-}
+import { Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
 
+export const validate = (schema: z.ZodTypeAny) =>
+    (req: Request, res: Response, next: NextFunction) => {
+        const result = schema.safeParse(req);
+        if (!result.success) {
+            res.status(400).json({
+                errors: result.error.format(),
+            });
+            return
+        }
+        next();
+    };
 
 

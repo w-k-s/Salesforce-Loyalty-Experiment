@@ -1,15 +1,14 @@
 import express from 'express';
-import handlers from './member.handlers.js';
-import { createMemberSchema } from './member.validation.js';
+import { create, getById } from './member.handlers.js';
+import { CreateMemberRequestSchema } from './types.js';
 import { validate } from '../middleware/index.js'
 import { requiresScope } from '../middleware/authentication.js';
 
-export default ({ memberService }) => {
-    const memberHandlers = handlers({ memberService })
+export default () => {
 
     const memberRoutes = express.Router()
-    memberRoutes.post('/register', validate(createMemberSchema), memberHandlers.create);
-    memberRoutes.get('/me', requiresScope('view-profile'), memberHandlers.getById)
+    memberRoutes.post('/register', validate(CreateMemberRequestSchema), create);
+    memberRoutes.get('/me', requiresScope('view-profile'), getById)
 
     return memberRoutes
 }

@@ -1,3 +1,5 @@
+// #region Loyalty
+
 export class SalesforceConnection {
 
     constructor(
@@ -21,6 +23,10 @@ export interface SalesforceConfig {
     connection: SalesforceConnection;
     defaults: SalesforceDefaults
 }
+
+// #endregion
+
+// #region RabbitMQ
 
 export interface RabbitMQConnection {
     protocol: string;
@@ -70,6 +76,10 @@ export interface RabbitMQConfig {
     };
 }
 
+// #endregion
+
+// #region Cache
+
 export interface CacheConnection {
     url: string,
 }
@@ -78,6 +88,10 @@ export interface CacheConfig {
     connection: CacheConnection,
     useLocal: boolean
 }
+
+// #endregion
+
+// #region Database
 
 export interface Sqlite3Connection {
     filename: string
@@ -98,4 +112,21 @@ export interface DatabaseConnection {
 
 export interface DatabaseConfig {
     connection: DatabaseConnection
+}
+
+// #endregion
+
+// #region Identity Provider
+
+export interface IdentityProviderConnection{
+    authUrl: string
+    clientId: string
+    clientSecret: string
+    tenant: string
+    issuerUrl: string
+}
+
+export interface IdentityProviderConfig {
+    connection: IdentityProviderConnection
+    useLocal: boolean 
 }
