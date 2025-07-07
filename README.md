@@ -63,6 +63,8 @@ Salesforce events are triggered through Change Data Capture. The setup is shown 
 
 ### Create Member
 
+**Request**
+
 ```shell
 curl -X POST --json "$(jq -n \
   --arg fn "John" \
@@ -75,7 +77,81 @@ curl -X POST --json "$(jq -n \
 http://localhost:3000/api/v1/user/register
 ```
 
-### 
+**Response**
+
+```json
+{
+    "id": "003gL00000721XAQAY",
+    "firstName": "John",
+    "lastName": "Doe",
+    "password": "12345678",
+    "mobileNumber": "971561234567",
+    "email": "john20250707190156@doe.com",
+    "birthDate": "1970-01-01"
+}  
+```
+
+### Get Access Token for Member
+
+**Request**
+
+```shell
+curl -X POST "http://localhost:8080/realms/loyalty/protocol/openid-connect/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "client_id=loyalty-client" \
+  -d "client_secret=yuz1GRD9NuOenMKuMCFKQLxg0wSj4mZp" \
+  -d "grant_type=password" \
+  -d "username=john20250707190156@doe.com" \
+  -d "password=12345678"
+```
+
+**Response**
+
+```json
+{
+    "access_token": "******",
+    "expires_in": 300,
+    "refresh_expires_in": 1800,
+    "refresh_token": "*******",
+    "token_type": "Bearer",
+    "not-before-policy": 0,
+    "session_state": "bedbbaa0-538a-4ab1-aa49-b3554f82dfda",
+    "scope": "profile email"
+}
+```
+
+### Get Member Profile
+
+**Request**
+
+```shell
+curl -X GET "http://localhost:3000/api/v1/user/me" \
+  -H "Content-Type: application/json" \
+  -d "Authorization: Bearer ********"
+```
+
+**Response**
+
+```json
+{
+    "access_token": "******",
+    "expires_in": 300,
+    "refresh_expires_in": 1800,
+    "refresh_token": "*******",
+    "token_type": "Bearer",
+    "not-before-policy": 0,
+    "session_state": "bedbbaa0-538a-4ab1-aa49-b3554f82dfda",
+    "scope": "profile email"
+}
+```
+
+### OpenID Configuration
+
+**Request**
+```shell
+curl 'http://localhost:8080/realms/loyalty/.well-known/openid-configuration'
+```
+
 ---
 
 ## To Do

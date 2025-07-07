@@ -63,7 +63,6 @@ const kcFetch = async (
     options: Omit<RequestInit, 'headers'> & { token?: string } = {}
 ) => {
     const token = options.token || await getToken();
-    console.log('Using token', token)
 
     const res = await fetch(`${auth.connection.authUrl}${path}`, {
         ...options,
