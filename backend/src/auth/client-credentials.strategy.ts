@@ -37,6 +37,7 @@ util.inherits(Strategy, passport.Strategy);
  */
 Strategy.prototype.authenticate = async function (req) {
     const authorization = req.headers.authorization
+
     if (!authorization) {
         console.log("Authorization header not found")
         return this.fail();
@@ -52,12 +53,12 @@ Strategy.prototype.authenticate = async function (req) {
         });
 
         function getKey(header, callback) {
-            client.getSigningKey(header.kid, function (err, key) {
+            client.getSigningKey(header.kid, function (err, key: any) {
                 if (err) {
                     console.log(`Failed to retrieve key with id '${header.kid}'`)
                     callback(err, null);
                 } else {
-                    var signingKey = undefined //key.publicKey || key.rsaPublicKey;
+                    var signingKey = key.publicKey || key.rsaPublicKey;
                     callback(null, signingKey);
                 }
 
@@ -72,8 +73,9 @@ Strategy.prototype.authenticate = async function (req) {
         }
 
         const [_, token] = authorization.split(" ")
+
         jwt.verify(token, getKey, function (err, decoded) {
-            console.log({ decoded })
+            console.log(JSON.stringify(decoded))
             self._verify(decoded, verified);
         })
 

@@ -2,19 +2,14 @@ import config from "../config/index.js";
 import passport from "passport";
 import cache from '../cache/index.js'
 
-const { get: cacheGet, set: cacheSet } = cache
 const { auth } = config
 
-import { Issuer } from "openid-client"
 import { Strategy } from '../auth/client-credentials.strategy.js'
 
-const issuer = await Issuer.discover(authentication.issuerUrl)
+// We could use openid-client to cache this 
 passport.use('oauth2', new Strategy({
-    jwksUri: issuer.jwks_uri,
-    cacheSet,
-    cacheGet,
+    jwksUri: auth.connection.jwksUri,
 }, (userInfo, done) => {
-    console.log('oauth2', userInfo);
     return done(null, userInfo);
 }))
 

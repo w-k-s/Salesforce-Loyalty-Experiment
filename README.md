@@ -127,7 +127,7 @@ curl -X POST "http://localhost:8080/realms/loyalty/protocol/openid-connect/token
 ```shell
 curl -X GET "http://localhost:3000/api/v1/user/me" \
   -H "Content-Type: application/json" \
-  -d "Authorization: Bearer ********"
+  -H "Authorization: Bearer ********"
 ```
 
 **Response**

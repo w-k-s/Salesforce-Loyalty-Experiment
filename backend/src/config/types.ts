@@ -118,15 +118,15 @@ export interface DatabaseConfig {
 
 // #region Identity Provider
 
-export interface IdentityProviderConnection{
+export interface IdentityProviderConnection {
     authUrl: string
     clientId: string
     clientSecret: string
     tenant: string
-    issuerUrl: string
+    jwksUri: string
 }
 
 export interface IdentityProviderConfig {
     connection: IdentityProviderConnection
-    useLocal: boolean 
+    useLocal: boolean
 }
