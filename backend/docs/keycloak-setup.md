@@ -71,7 +71,17 @@ From what I understand
 
 ### Configuring admin-cli for user registration
 
-![Configure `admin-cli` for user registration](./media/configure-admin-cli-for-user-registration.gif)
+1. Open Keycloak Admin Portal `http://localhost:8080`
+1. Select the `master` realm.
+1. Select `Clients`
+1. Select the `admin-cli` client.
+1. Enable `Client authentication` and `Authorization` (`Direct access grants` and `Service accounts roles` should be checked). Save
+1. The `Credentials` tab should now be visible. Click on the tab. Copy the client secret to the `.env` file.
+1. Navigate to the `Service account roles` tab. Click on `Assign role`. Check:
+    - `loyalty-realm`: `manage-users`
+    - `loyalty-realm`: `manage-realm`
+
+![Configure `admin-cli` for user registration](./media/configure-admin-cli-for-user-registration.mp4)
 
 ### Adding custom field to user profile
 

@@ -25,6 +25,8 @@ The Proof of Concept uses Salesforce Sales Cloud since it's free, but the intent
 
     This project only considers partners that expand the ecosystem. In this respect, partner companies notify the loyalty backend when a transaction occurs so that the programme member earns loyalty currency.
 
+---
+
 ## Migrations
 
 ### Create Migration File
@@ -56,6 +58,25 @@ Salesforce events are triggered through Change Data Capture. The setup is shown 
 
 ![Salesforce CDC](./backend/docs/media/Salesforce-CDC-Setup.png)
 
+---
+## curl Requests
+
+### Create Member
+
+```shell
+curl -X POST --json "$(jq -n \
+  --arg fn "John" \
+  --arg ln "Doe" \
+  --arg pwd "12345678" \
+  --arg mobile "971561234567" \
+  --arg email "john$(date +%Y%m%d%H%M%S)@doe.com" \
+  --arg birth "1970-01-01" \
+  '{firstName: $fn, lastName: $ln, password: $pwd, mobileNumber: $mobile, email: $email, birthDate: $birth}')" \
+http://localhost:3000/api/v1/user/register
+```
+
+### 
+---
 
 ## To Do
 

@@ -21,8 +21,8 @@ export interface User {
 }
 
 export interface AuthenticationService {
-    createUser(request: CreateUserRequest): Promise<User | 'duplicate'>
-    getUserByUsername(username: string): Promise<User | 'notfound'>
+    createUser(request: CreateUserRequest): Promise<User | 'USER_EXISTS'>
+    getUserByUsername(username: string): Promise<User | 'NOT_FOUND'>
 }
 
 export type UserId = string

@@ -1,10 +1,16 @@
+import { Options } from './types.js'
+
 const cache: Record<string, any> = {};
 
 export const get = async (key: string): Promise<any> => {
     return cache[key];
 }
 
-export const set = (key: string, value: any, { timeToLiveSeconds: number }): Promise<any> => {
+export const set = async (key: string, value: any, options: Options): Promise<void> => {
     cache[key] = value;
-    return Promise.resolve()
 }
+
+export const invalidate = async (key: string): Promise<void> => {
+    delete cache[key];
+}
+

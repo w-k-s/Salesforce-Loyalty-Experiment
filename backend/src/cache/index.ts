@@ -1,11 +1,14 @@
 import { type Cache } from './types.js'
 import { default as config } from '../config/index.js'
-import { get as localGet, set as localSet } from './local.js'
-import { get as redisGet, set as redisSet } from './redis.js'
+import { get as localGet, set as localSet, invalidate as localInvalidate } from './local.js'
+import { get as redisGet, set as redisSet, invalidate as redisInvalidate } from './redis.js'
 
-const { cache } = config
+const { cache: cacheConfig } = config
 
-export default {
-    get: cache.useLocal ? localGet : redisGet,
-    set: cache.useLocal ? localSet : redisSet,
-} satisfies Cache
+const cache: Cache = {
+    get: cacheConfig.useLocal ? localGet : redisGet,
+    set: cacheConfig.useLocal ? localSet : redisSet,
+    invalidate: cacheConfig.useLocal ? localInvalidate : redisInvalidate
+}
+
+export default cache

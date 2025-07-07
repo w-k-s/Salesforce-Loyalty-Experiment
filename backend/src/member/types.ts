@@ -27,7 +27,7 @@ export const CreateMemberRequestSchema = z.object({
     email: z.string().email(),
     birthDate: z
         .string()
-        .datetime({ offset: true })
+        .date()
         .refine((dateStr) => new Date(dateStr) <= new Date(), {
             message: 'Birth date must not be in the future',
         }),

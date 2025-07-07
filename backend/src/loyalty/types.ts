@@ -1,5 +1,5 @@
 export interface LoyaltyCRM {
-    createContact(params: CreateContactRequest): Promise<ContactId>
+    createContact(params: CreateContactRequest): Promise<ContactId | 'CONTACT_EXISTS'>
     findMemberById(id: string): Promise<Contact>
     listProducts(): Promise<Product[]>
     createTransaction(params: CreateTransactionJournal): Promise<TransactionId>

@@ -2,17 +2,25 @@ import { NotFoundError } from '../errors/index.js';
 import { type CreateContactRequest, type Contact, type ContactId } from './types.js';
 import { default as salesforceConnection } from './connection.js'
 
-export const createContact = async (request: CreateContactRequest): Promise<ContactId> => {
-    const { id: salesforceId } = await salesforceConnection.sobject("Contact").create({
-        FirstName: request.firstName,
-        MiddleName: request.middleName,
-        LastName: request.lastName,
-        Birthdate: request.birthDate,
-        Email: request.email,
-        //GenderIdentity: request.gender,
-        MobilePhone: request.mobileNumber
-    });
-    return salesforceId
+export const createContact = async (request: CreateContactRequest): Promise<ContactId | 'CONTACT_EXISTS'> => {
+    try {
+        const result = await salesforceConnection.sobject("Contact").create({
+            FirstName: request.firstName,
+            MiddleName: request.middleName,
+            LastName: request.lastName,
+            Birthdate: request.birthDate,
+            Email: request.email,
+            //GenderIdentity: request.gender,
+            MobilePhone: request.mobileNumber
+        });
+        console.log('ContactId', result.id)
+        return result.id
+    } catch (e) {
+        if (e.errorCode === "DUPLICATES_DETECTED") {
+            return 'CONTACT_EXSITS';
+        }
+        throw e
+    }
 }
 
 export const findMemberById = async (id: ContactId): Promise<Contact> => {

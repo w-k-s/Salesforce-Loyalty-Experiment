@@ -5,7 +5,9 @@ import { createUser as createKeycloakUser, getUserByUsername as getKeycloakUserB
 
 const { auth } = config
 
-export default {
+const authenticationService: AuthenticationService = {
     createUser: auth.useLocal ? createLocalUser : createKeycloakUser,
     getUserByUsername: auth.useLocal ? getLocalUserByUsername : getKeycloakUserByUsername,
-} as AuthenticationService
+}
+
+export default authenticationService

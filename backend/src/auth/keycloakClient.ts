@@ -24,12 +24,12 @@ const getToken = async (): Promise<string> => {
         body: form,
     });
 
+    const json = await response.json();
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`Failed to get token: ${JSON.stringify(error)}`);
+        throw new Error(`Failed to get token: ${JSON.stringify(json)}`);
     }
 
-    const { access_token: token, expires_in } = await response.json();
+    const { access_token: token, expires_in } = json;
     await cacheSet(CACHE_KEY_TOKEN, token, { timeToLiveSeconds: expires_in - 30 });
 
     return token;
@@ -63,6 +63,7 @@ const kcFetch = async (
     options: Omit<RequestInit, 'headers'> & { token?: string } = {}
 ) => {
     const token = options.token || await getToken();
+    console.log('Using token', token)
 
     const res = await fetch(`${auth.connection.authUrl}${path}`, {
         ...options,
