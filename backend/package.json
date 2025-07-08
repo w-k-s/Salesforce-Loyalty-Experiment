@@ -1,11 +1,14 @@
 {
   "name": "loyalty-experiment",
   "version": "1.0.0",
-  "type": "module",
   "description": "",
-  "main": "src/app.js",
+  "main": "src/app.ts",
   "scripts": {
-    "start": "node src/app.js",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node dist/app.js",
+    "dev": "tsc --watch & nodemon dist/app.js",
+    "clean": "rm -rf dist",
     "migrate": "knex --esm migrate:latest",
     "test": "mocha --timeout 0"
   },
@@ -15,28 +18,34 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.10.10",
     "@grpc/proto-loader": "^0.7.13",
+    "@types/jsforce": "^1.11.5",
     "amqplib": "^0.10.4",
     "avro-js": "^1.11.3",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-openid-connect": "^2.17.1",
+    "express-oauth2-jwt-bearer": "^1.6.1",
     "express-session": "^1.18.0",
-    "joi": "^17.13.3",
     "jsforce": "^3.2.1",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
     "knex": "^3.1.0",
-    "openid-client": "^5.6.5",
-    "passport": "^0.7.0",
     "pg": "^8.12.0",
     "prettier": "^3.3.2",
     "redis": "^4.6.15",
-    "salesforce-pubsub-api-client": "^4.1.0",
-    "uuid": "^10.0.0"
+    "salesforce-pubsub-api-client": "^5.4.0",
+    "sqlite3": "^5.1.7",
+    "undici-types": "^7.11.0",
+    "uuid": "^10.0.0",
+    "zod": "^3.25.74"
   },
   "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.10",
     "mocha": "^10.7.0",
-    "testcontainers": "^10.10.4"
+    "nodemon": "^3.1.10",
+    "testcontainers": "^10.10.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
