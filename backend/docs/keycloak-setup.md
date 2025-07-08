@@ -128,3 +128,51 @@ To disable displaying sign-up in the login form:
 1. Once added, click on `realm roles` and in the resulting form, enable return in `user info endpoint`.
 
 ![Add Realm Roles to UserInfo endpoint](./media/add-realm-roles-to-userinfo-endpoint.gif)
+
+## Samples
+
+### Sample JWT payload
+
+```json
+{
+  "exp": 1751916702,
+  "iat": 1751916402,
+  "jti": "235fcdfa-35d2-4426-93cb-56a56da52ec2",
+  "iss": "http://localhost:8080/realms/loyalty",
+  "aud": "account",
+  "sub": "8b6a99f5-ae78-4be6-9a0e-ef53cc414083",
+  "typ": "Bearer",
+  "azp": "loyalty-client",
+  "sid": "55648008-11fc-4122-868a-d95171a15da4",
+  "acr": "1",
+  "allowed-origins": [
+    "http://localhost:3000"
+  ],
+  "realm_access": {
+    "roles": [
+      "offline_access",
+      "loyalty-member",
+      "default-roles-loyalty",
+      "uma_authorization",
+      "view-profile"
+    ]
+  },
+  "resource_access": {
+    "account": {
+      "roles": [
+        "manage-account",
+        "manage-account-links",
+        "view-profile"
+      ]
+    }
+  },
+  "scope": "profile email",
+  "email_verified": true,
+  "name": "John Doe",
+  "customerId": "003gL00000721XAQAY",
+  "preferred_username": "john20250707190156@doe.com",
+  "given_name": "John",
+  "family_name": "Doe",
+  "email": "john20250707190156@doe.com"
+}
+```

@@ -123,7 +123,8 @@ export interface IdentityProviderConnection {
     clientId: string
     clientSecret: string
     tenant: string
-    jwksUri: string
+    issuerUrl: string
+    audience?: string
 }
 
 export interface IdentityProviderConfig {

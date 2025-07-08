@@ -15,12 +15,12 @@ export const listProducts = async (): Promise<Product[]> => {
         return []
     }
 
-    return products.map((product) => {
+    return products.map((product): Product => {
         return {
             id: product.Id,
             name: product.Name,
             code: product.ProductCode,
             unitPrice: product.UnitPrice,
-        } as Product
+        }
     })
 }

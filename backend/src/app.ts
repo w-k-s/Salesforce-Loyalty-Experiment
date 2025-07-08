@@ -1,9 +1,10 @@
-import { default as config } from './config/index.js';
+import config from './config/index.js';
 
 import express from 'express';
 import routes from './routes.js'
 import bodyParser from 'body-parser';
 
+import { auth as oauth2 } from 'express-oauth2-jwt-bearer'
 import { errorResponse } from './middleware/errors.js';
 
 import mqService from './mq/index.js';
@@ -19,6 +20,10 @@ const port = 3000
 
 app.use(bodyParser.json())
 app.use(errorResponse)
+app.use(oauth2({
+  issuerBaseURL: config.auth.connection.issuerUrl,
+  audience: config.auth.connection.audience
+}))
 routes(app)
 
 async function runMigrations() {
