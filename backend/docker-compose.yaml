@@ -7,6 +7,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      DB_CLIENT: 'pg'
       DB_HOST: postgres
       DB_PORT: 5432
       DB_USERNAME: postgres
@@ -19,6 +20,10 @@ services:
       AUTH_BASE_URL: http://keycloak:8080
       KEYCLOAK_ISSUER_URL: http://keycloak:8080/realms/loyalty
       REDIS_URL: 'redis://redis:6379'
+      SALESFORCE_AUTH_TYPE: username-password
+      PUB_SUB_ENDPOINT: api.pubsub.salesforce.com:7443
+      USE_LOCAL_CACHE: false
+      USE_IN_MEMORY_DB: false
     env_file:
       - .env
     depends_on:
