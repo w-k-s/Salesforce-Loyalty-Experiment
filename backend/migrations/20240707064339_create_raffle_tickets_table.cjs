@@ -4,9 +4,8 @@
  */
 exports.up = function (knex) {
     return knex.schema.createTable('raffle_tickets', (table) => {
-        table.uuid('id').primary();
-        table.string('raffle_name').notNullable();
         table.string('transaction_id').notNullable();
+        table.string('raffle_name').notNullable();
         table.decimal('transaction_amount', 10, 2).notNullable();
         table.integer('tickets').notNullable();
         table.string('customer_id').notNullable();

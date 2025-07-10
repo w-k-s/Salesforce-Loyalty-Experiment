@@ -1,14 +1,14 @@
 import db from '../db/index.js'
-import * as repo from './transactions.data.js'
+import * as repo from './data.js'
 import mqService from '../mq/index.js'
 import config from '../config/index.js'
-import { Transaction } from '../loyalty/types.js';
+import { ContactId, Transaction } from '../loyalty/types.js';
 
 const { mq } = config
 
 export const onTransactionCreated = async (transaction: Transaction) => {
     await repo.saveTransaction(transaction);
-    onTransactionSaved(transaction)
+    await onTransactionSaved(transaction)
 }
 
 export const onTransactionUpdated = async (transaction: Transaction) => {
@@ -27,12 +27,11 @@ export const processOutOfOrderTransaction = async (messageContent, msg) => {
             // Throw error to trigger retry mechanism
             console.log(`Update not processed: ${messageContent.id}`);
             throw new Error(`Transaction update not processed: ${messageContent.id}`);
-        }
-        if (result === "STALE") {
+        } else if (result === "STALE") {
             console.log("Transaction stale.")
         } else {
             console.log(`Update processed: ${result.id}`);
-            onTransactionSaved(result)
+            await onTransactionSaved(result)
         }
 
     } catch (error) {
@@ -43,6 +42,8 @@ export const processOutOfOrderTransaction = async (messageContent, msg) => {
 }
 
 const updateTransaction = async (event: Transaction): Promise<Transaction | 'NOT_FOUND' | 'STALE'> => {
+    console.log(`updateTransaction: Event Received`, JSON.stringify(event))
+
     return db.transaction(async (trx) => {
         const result = await repo.findTransactionById(event.id)
         if (result === 'NOT_FOUND') {
@@ -62,25 +63,21 @@ const updateTransaction = async (event: Transaction): Promise<Transaction | 'NOT
     })
 }
 
-const onTransactionSaved = (transaction: Transaction) => {
+const onTransactionSaved = async (transaction: Transaction) => {
     const pointsToAward = BigInt(transaction.totalAmount) / BigInt(10)
     const risk = assessRisk(transaction.customerId, pointsToAward, transaction.createdDate)
     if (risk === 'high') {
         // raise case of suspicious transaction
     } else {
-        // award points
-        issueRaffleTickets(transaction);
+        await mqService.publishToExchange(
+            mq.exchanges.TRANSACTIONS.name,
+            'transaction.processed',
+            transaction,
+        );
     }
 }
 
-const assessRisk = (customerId, points, date): string => {
+const assessRisk = (customerId: ContactId, points: BigInt, date: Date): string => {
     //TODO
     return 'low'
-}
-
-const issueRaffleTickets = async (transaction: Transaction) => {
-    await mqService.publishToQueue(
-        mq.queues.ISSUE_RAFFLE_TICKETS.name,
-        transaction
-    );
 }

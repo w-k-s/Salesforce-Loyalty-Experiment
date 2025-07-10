@@ -1,1 +1,1 @@
-export { default } from './product.routes.js';
+export { default } from './routes.js';

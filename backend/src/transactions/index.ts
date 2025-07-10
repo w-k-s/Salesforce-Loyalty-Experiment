@@ -1,1 +1,1 @@
-export { default } from './transactions.routes.js';
+export { default } from './routes.js';

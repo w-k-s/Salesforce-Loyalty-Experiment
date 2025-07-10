@@ -1,1 +1,1 @@
-export { default } from './member.routes.js';
+export { default } from './routes.js';

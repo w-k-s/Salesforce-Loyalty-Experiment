@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAll } from './product.handlers.js';
+import { getAll } from './handlers.js';
 
 export default () => {
 

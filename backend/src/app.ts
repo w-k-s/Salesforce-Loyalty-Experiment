@@ -7,7 +7,8 @@ import bodyParser from 'body-parser';
 import mqService from './mq/index.js';
 import db from './db/index.js'
 
-import { processTransaction, onTransactionCreated, onTransactionUpdated } from './transactions/transactions.service.js';
+import { processOutOfOrderTransaction, onTransactionCreated, onTransactionUpdated } from './transactions/service.js';
+import { issueRaffleTickets } from './raffles/service.js';
 import { TransactionEmitter as loyaltyTxnEmitter } from './loyalty/index.js';
 
 const { mq } = config;
@@ -35,7 +36,16 @@ async function initializeRabbitMQ() {
 
     await mqService.consume(
       mq.queues.OUT_OF_ORDER_TXNS.name,
-      processTransaction,
+      processOutOfOrderTransaction,
+      {
+        prefetch: 1,
+        maxRetries: 3
+      }
+    );
+
+    await mqService.consume(
+      mq.queues.ISSUE_RAFFLE_TICKETS.name,
+      issueRaffleTickets,
       {
         prefetch: 1,
         maxRetries: 3

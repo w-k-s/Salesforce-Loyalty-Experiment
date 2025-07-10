@@ -36,23 +36,23 @@ export default {
                     'x-max-length': 10000,
                     'x-dead-letter-exchange': 'dlx.issue-raffle-tickets',
                     'x-dead-letter-routing-key': 'failed.issue-raffle-tickets'
+                },
+            },
+            bindings: [
+                {
+                    exchange: 'transactions.exchange',
+                    routingKey: 'transaction.processed'
                 }
-            }
+            ]
         }
     },
     exchanges: {
-        NOTIFICATIONS: {
-            name: 'notifications.exchange',
+        TRANSACTIONS: {
+            name: 'transactions.exchange',
             type: 'topic',
             options: {
-                durable: true
-            }
-        },
-        ORDERS: {
-            name: 'orders.exchange',
-            type: 'direct',
-            options: {
-                durable: true
+                durable: true,
+                autoDelete: false
             }
         }
     }

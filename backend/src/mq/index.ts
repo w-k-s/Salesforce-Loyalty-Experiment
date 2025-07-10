@@ -62,6 +62,17 @@ class MQService {
                 await this.channel.assertQueue(queue.name, queue.options);
                 console.log(`Queue '${queue.name}' created/verified`);
 
+                if (queue.bindings && queue.bindings.length > 0) {
+                    for (const binding of queue.bindings) {
+                        await this.channel.bindQueue(
+                            queue.name,
+                            binding.exchange,
+                            binding.routingKey
+                        );
+                        console.log(`Queue '${queue.name}' bound to exchange '${binding.exchange}' with routing key '${binding.routingKey}'`);
+                    }
+                }
+
                 const { arguments: args } = queue.options
                 if (args) {
                     const dlxName = args['x-dead-letter-exchange']
@@ -74,22 +85,13 @@ class MQService {
                 }
             }
 
-            // Optional: Bind queues to exchanges if both exist
-            // if (config.exchanges && config.exchanges.NOTIFICATIONS) {
-            //     await this.channel.bindQueue(
-            //         config.queues.USER_NOTIFICATIONS.name,
-            //         config.exchanges.NOTIFICATIONS.name,
-            //         'user.*'
-            //     );
-            // }
-
         } catch (error) {
             console.error('Failed to setup RabbitMQ infrastructure:', error);
         }
     }
 
     // Direct queue publishing (no exchange needed)
-    async publishToQueue(queueName, message, options = {}) {
+    async publishToQueue(queueName: string, message: any, options = {}) {
         if (!this.isConnected) {
             throw new Error('RabbitMQ not connected');
         }
@@ -130,7 +132,7 @@ class MQService {
     }
 
     // Exchange publishing (for complex routing scenarios)
-    async publishToExchange(exchangeName, routingKey, message, options = {}) {
+    async publishToExchange(exchangeName: string, routingKey: string, message: any, options = {}) {
         if (!this.isConnected) {
             throw new Error('RabbitMQ not connected');
         }
@@ -170,7 +172,7 @@ class MQService {
         }
     }
 
-    async consume(queueName, callback, options = {}) {
+    async consume(queueName: string, callback, options = {}) {
         if (!this.isConnected) {
             throw new Error('RabbitMQ not connected');
         }
@@ -240,7 +242,7 @@ class MQService {
         }
     }
 
-    async getQueueInfo(queueName) {
+    async getQueueInfo(queueName: string) {
         if (!this.isConnected) {
             throw new Error('RabbitMQ not connected');
         }

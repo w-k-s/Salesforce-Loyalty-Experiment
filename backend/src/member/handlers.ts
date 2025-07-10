@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { registerMember } from './member.service.js'
+import { registerMember } from './service.js'
 import loyalty from "../loyalty/index.js";
 import { CreateMemberRequest } from './types.js';
 

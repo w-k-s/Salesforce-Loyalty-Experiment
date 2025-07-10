@@ -1,5 +1,5 @@
 import express from 'express';
-import { create } from './transactions.handlers.js';
+import { create } from './handlers.js';
 import { CreateTransactionSchema } from './types.js';
 import { validate } from '../middleware/index.js'
 import { requiresAuthentication } from '../middleware/authentication.js';
