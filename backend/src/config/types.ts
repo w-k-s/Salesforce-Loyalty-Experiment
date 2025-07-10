@@ -69,6 +69,7 @@ export interface RabbitMQConfig {
     connection: RabbitMQConnection;
     queues: {
         OUT_OF_ORDER_TXNS: Queue;
+        ISSUE_RAFFLE_TICKETS: Queue;
     };
     exchanges: {
         NOTIFICATIONS: Exchange;

@@ -1,5 +1,6 @@
 import PubSubApiClient from 'salesforce-pubsub-api-client';
 import { EventEmitter } from 'events';
+import { Transaction } from './types.js'
 import { type Connection } from 'jsforce';
 import { default as salesforceConnection } from './connection.js'
 
@@ -48,7 +49,7 @@ class TransactionEmitter {
 
                         const { payload } = data
                         const { ChangeEventHeader: { changeType } } = payload
-                        const transaction = {
+                        const transaction: Transaction = {
                             id: payload.ChangeEventHeader.recordIds[0],
                             orderNumber: payload.OrderNumber,
                             description: payload.Description,

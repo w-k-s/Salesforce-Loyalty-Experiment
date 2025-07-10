@@ -24,6 +24,20 @@ export default {
                     'x-dead-letter-routing-key': 'failed.transactions'
                 }
             }
+        },
+        ISSUE_RAFFLE_TICKETS: {
+            name: 'issue-raffle-tickets',
+            options: {
+                durable: true,
+                exclusive: false,
+                autoDelete: false,
+                arguments: {
+                    'x-message-ttl': 1800000, // 30 minutes
+                    'x-max-length': 10000,
+                    'x-dead-letter-exchange': 'dlx.issue-raffle-tickets',
+                    'x-dead-letter-routing-key': 'failed.issue-raffle-tickets'
+                }
+            }
         }
     },
     exchanges: {

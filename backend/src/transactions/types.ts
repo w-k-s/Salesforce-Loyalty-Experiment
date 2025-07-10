@@ -15,13 +15,3 @@ export const CreateTransactionSchema = z.object({
 
 export type CreateTransactionRequest = z.infer<typeof CreateTransactionSchema>;
 
-export interface Transaction {
-    id: string
-    customerId: string
-    transactionId: string
-    transactionAmount: string
-    raffleName?: string
-    raffleTickets?: number
-    createdDate: Date
-    modifiedDate: Date
-}

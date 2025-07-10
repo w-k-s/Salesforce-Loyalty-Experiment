@@ -1,36 +1,40 @@
-import { saveTransaction, updateTransaction, findTransactionById } from './transactions.data.js'
-import { issueRaffleTickets } from '../raffles/raffle.service.js';
+import db from '../db/index.js'
+import * as repo from './transactions.data.js'
 import mqService from '../mq/index.js'
-import { default as config } from '../config/index.js'
+import config from '../config/index.js'
+import { Transaction } from '../loyalty/types.js';
 
 const { mq } = config
 
-export const onTransactionCreated = async (transaction) => {
-    await saveTransaction(transaction);
-    issueRaffleTickets(transaction);
+export const onTransactionCreated = async (transaction: Transaction) => {
+    await repo.saveTransaction(transaction);
+    onTransactionSaved(transaction)
 }
 
-export const onTransactionUpdated = async (transaction) => {
+export const onTransactionUpdated = async (transaction: Transaction) => {
     await mqService.publishToQueue(
         mq.queues.OUT_OF_ORDER_TXNS.name,
         transaction
     );
 }
 
-export const processTransaction = async (messageContent, msg) => {
+export const processOutOfOrderTransaction = async (messageContent, msg) => {
     try {
         console.log(`Processing out-of-order transaction: ${messageContent.id}`);
 
-        if (await processOutOfOrderTransaction(messageContent)) {
-            // Update processed successfully
-            console.log(`Update processed: ${messageContent.id}`);
-            // Message will be automatically acknowledged by the mqService
-        } else {
-            // Update stale or transaction create event not received
-            console.log(`Update not processed: ${messageContent.id}`);
+        const result = await updateTransaction(messageContent)
+        if (result === 'NOT_FOUND') {
             // Throw error to trigger retry mechanism
+            console.log(`Update not processed: ${messageContent.id}`);
             throw new Error(`Transaction update not processed: ${messageContent.id}`);
         }
+        if (result === "STALE") {
+            console.log("Transaction stale.")
+        } else {
+            console.log(`Update processed: ${result.id}`);
+            onTransactionSaved(result)
+        }
+
     } catch (error) {
         console.log(`Failed to process out-of-order transaction ${messageContent.id}:`, error);
         // Re-throw to let mqService handle retries and dead letter queue
@@ -38,16 +42,45 @@ export const processTransaction = async (messageContent, msg) => {
     }
 }
 
-const processOutOfOrderTransaction = async (event) => {
-    const updated = await updateTransaction(event, (oldTransaction) => {
-        return oldTransaction.modifiedDate < event.modifiedDate
-    })
+const updateTransaction = async (event: Transaction): Promise<Transaction | 'NOT_FOUND' | 'STALE'> => {
+    return db.transaction(async (trx) => {
+        const result = await repo.findTransactionById(event.id)
+        if (result === 'NOT_FOUND') {
+            return result
+        }
 
-    if (updated) {
-        // An additional query is required because the event doesn't have most of the data.
-        const transaction = await findTransactionById(event.id)
+        const isStale = result.modifiedDate > event.modifiedDate
+        if (isStale) {
+            return 'STALE'
+        }
+
+        result.totalAmount = event.totalAmount
+        result.modifiedDate = event.modifiedDate
+
+        await repo.updateTransaction(result, trx)
+        return result
+    })
+}
+
+const onTransactionSaved = (transaction: Transaction) => {
+    const pointsToAward = BigInt(transaction.totalAmount) / BigInt(10)
+    const risk = assessRisk(transaction.customerId, pointsToAward, transaction.createdDate)
+    if (risk === 'high') {
+        // raise case of suspicious transaction
+    } else {
+        // award points
         issueRaffleTickets(transaction);
     }
+}
 
-    return updated
+const assessRisk = (customerId, points, date): string => {
+    //TODO
+    return 'low'
+}
+
+const issueRaffleTickets = async (transaction: Transaction) => {
+    await mqService.publishToQueue(
+        mq.queues.ISSUE_RAFFLE_TICKETS.name,
+        transaction
+    );
 }
