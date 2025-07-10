@@ -1,74 +1,81 @@
-import { v4 as uuidv4 } from 'uuid';
-import { findRaffleTicketsForTransaction, saveRaffleTransaction, updateRaffleTransaction } from './raffle.data.js'
+import { type Transaction } from '../loyalty/types.js';
+import { type Raffle } from './types.js';
+import {
+    findRaffleByTransactionId,
+    updateRaffleTransaction,
+    saveRaffleTransaction
+} from './raffle.data.js';
 
-const RAFFLE_TICKET_PRICE = 10.0
-const RAFFLE_NAME = "Win an iPhone"
+// Constants
+const RAFFLE_TICKET_PRICE = 10.0;
+const RAFFLE_NAME = 'Win an iPhone';
 
+/**
+ * Issues raffle tickets for a transaction, if eligible.
+ * - A raffle ticket is awarded for every $10 spent.
+ * - Tickets are issued only from Monday to Saturday during the 1st and 3rd weeks of each month.
+ * - No tickets are issued on draw days (Sundays).
+ */
+export const issueRaffleTickets = async (messageContent: Transaction, msg) => {
+    console.log(`issueRaffleTickets: Event Received`, JSON.stringify(event))
 
-export const issueRaffleTickets = async (transaction) => {
-    // For the sake of this PoC:
-    // - Imaginine raffle tickets are awarded from monday -> saturday during the first and third week of each month.
-    // - A raffle ticket is issued for every $10 spent on a transaction
-    // - The draw happens on sunday of the first and third week of each month. No raffle tickets are issued on draw day.
     try {
-        // Calculate the number of raffle tickets to award.
-        const ticketsToAward = Math.floor(transaction.totalAmount / RAFFLE_TICKET_PRICE);
+        const { id: transactionId, totalAmount, customerId } = messageContent;
 
-        // Check if the transaction has already been awarded raffle tickets
-        const raffleTransaction = await findRaffleTicketsForTransaction(transaction.id)
+        // Determine how many tickets to award
+        const ticketsToAward = BigInt(totalAmount) / BigInt(RAFFLE_TICKET_PRICE);
 
-        console.log(`Transaction: ${transaction.id}. Amount: ${transaction.totalAmount}. Tickets To Award: ${ticketsToAward}. Tickets Awarded: ${raffleTransaction === null}`)
-        // If the transaction has not been awarded raffle tickets, award them.
-        if (raffleTransaction === 'NOT_FOUND') {
-            if (ticketsToAward == 0 || !isRaffleTicketDay()) {
-                console.log(`0 raffles awarded to Transaction '${transaction.id}' with totalAmount '${transaction.totalAmount}'.`)
-                return null;
-            }
+        // Check for existing raffle entry
+        const result = await findRaffleByTransactionId(transactionId);
 
-            console.log(`${ticketsToAward} raffles awarded to Transaction '${transaction.id}' with totalAmount '${transaction.totalAmount}'.`)
-            return await saveRaffleTransaction({
-                id: uuidv4(),
-                raffleName: RAFFLE_NAME,
-                transactionId: transaction.id,
-                transactionAmount: transaction.totalAmount,
-                raffleTickets: ticketsToAward,
-                customerId: transaction.customerId,
-                createdDate: new Date(),
-                modifiedDate: new Date()
-            })
-
+        const update: Raffle = {
+            raffleName: RAFFLE_NAME,
+            transactionId,
+            totalAmount: Number(totalAmount),
+            raffleTickets: ticketsToAward,
+            customerId,
+            createdDate: result === "NOT_FOUND" ? new Date() : result.createdDate,
+            modifiedDate: new Date()
         }
 
-        // If the amount of the transaction has been updated, also update the amount of raffle tickets.
-        if (raffleTransaction.transactionAmount !== transaction.totalAmount) {
-            return await updateRaffleTransaction({
-                ...raffleTransaction,
-                tickets: ticketsToAward,
-                transactionAmount: transaction.totalAmount
-            })
+        if (result === 'NOT_FOUND' && isRaffleTicketDay() && ticketsToAward > 0) {
+            saveRaffleTransaction(update)
+            console.log(
+                `${ticketsToAward} raffle ticket(s) awarded for Transaction '${transactionId}'`
+            );
+        } else if (result != 'NOT_FOUND' && result.raffleTickets !== ticketsToAward) {
+            console.log(
+                `Updating raffle tickets for Transaction '${transactionId}' to ${ticketsToAward}`
+            );
+            updateRaffleTransaction(update)
         }
 
     } catch (e) {
-        console.error(e);
+        console.error('Failed to issue raffle tickets:', e);
     }
-}
+};
 
+/**
+ * Determines if today is a valid day for issuing raffle tickets.
+ * - Tickets are only issued on Monday–Saturday
+ * - Tickets are only issued in odd-numbered weeks (assumed to be 1st/3rd weeks)
+ */
 const isRaffleTicketDay = () => {
-    const weekNumber = getWeekNumber();
-    const isRaffleWeek = weekNumber % 2 != 0; // If the week is odd, it's probably the 1st/3rd week of a month
-    const isDrawDay = new Date().getDay() == 0; // Draw day is sunday
+    const today = new Date();
+    const isSunday = today.getDay() === 0; // 0 = Sunday
+    const isOddWeek = getWeekNumber(today) % 2 !== 0;
 
-    return isRaffleWeek && !isDrawDay
-}
+    return isOddWeek && !isSunday;
+};
 
-const getWeekNumber = (date: Date = new Date()): number => {
-    // Create a copy of the date object
-    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    // Set to the nearest Thursday: current date + 4 - current day number (adjust for the week's start on Monday)
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-    // Get the first day of the year
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    // Calculate the full weeks to the nearest Thursday
-    const weekNo = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+/**
+ * Returns the ISO week number for a given date.
+ * ISO weeks start on Monday and the first week of the year is the one with the first Thursday.
+ */
+const getWeekNumber = (date = new Date()): number => {
+    const target = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    target.setUTCDate(target.getUTCDate() + 4 - (target.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(target.getUTCFullYear(), 0, 1));
+    const weekNo = Math.ceil((((target.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
     return weekNo;
 };

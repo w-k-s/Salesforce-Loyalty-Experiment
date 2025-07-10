@@ -50,13 +50,20 @@ export interface QueueOptions {
     };
 }
 
+export interface QueueBinding {
+    exchange: string
+    routingKey: string
+}
+
 export interface Queue {
     name: string;
     options: QueueOptions;
+    bindings?: QueueBinding[];
 }
 
 export interface ExchangeOptions {
     durable: boolean;
+    autoDelete: boolean;
 }
 
 export interface Exchange {
@@ -72,7 +79,7 @@ export interface RabbitMQConfig {
         ISSUE_RAFFLE_TICKETS: Queue;
     };
     exchanges: {
-        NOTIFICATIONS: Exchange;
+        TRANSACTIONS: Exchange;
         ORDERS: Exchange;
     };
 }
