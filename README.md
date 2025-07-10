@@ -65,9 +65,9 @@ Salesforce events are triggered through Change Data Capture. The setup is shown 
 
 **Prerequisite**
 
-- Setup Realm roles for `loyalty-members` (all members will have this role)
-- Setup admin-cli client to be able to manage users and roles in loyalty realm. Tutorial.
-- Set mobile number and salesforceId as custom attributes on user.
+- Setup Realm roles for `loyalty-members` (all members will have this role). [Guide](/backend/docs/keycloak-setup.md#assigning-a-role-to-a-client)
+- Setup admin-cli client to be able to manage users and roles in loyalty realm. [Guide](/backend/docs/keycloak-setup.md#configuring-admin-cli-for-user-registration)
+- Set mobile number and salesforceId as custom attributes on user. [Guide](/backend/docs/keycloak-setup.md#adding-custom-field-to-user-profile)
 
 **Request**
 
@@ -90,7 +90,6 @@ http://localhost:3000/api/v1/user/register
     "id": "003gL00000721XAQAY",
     "firstName": "John",
     "lastName": "Doe",
-    "password": "12345678",
     "mobileNumber": "971561234567",
     "email": "john20250707190156@doe.com",
     "birthDate": "1970-01-01"
@@ -101,7 +100,7 @@ http://localhost:3000/api/v1/user/register
 
 **Prerequisite**
 
-- Include salesforceId in access token. Tutorial.
+- Include `salesforceId` in access token.[Guide](/backend/docs/keycloak-setup.md#including-customerid-in-the-access-token)
 
 **Request**
 
@@ -133,7 +132,7 @@ curl -X POST "http://localhost:8080/realms/loyalty/protocol/openid-connect/token
 ### Get Member Profile
 
 **Prerequisite**
-- Grant permission to `view-profile` to all users in loyalty-member role.
+- Grant permission to `view-profile` to all users in loyalty-member role.[Guide](/backend/docs/keycloak-setup.md#assigning-scopes-to-roles)
 
 **Request**
 
@@ -166,9 +165,9 @@ curl 'http://localhost:8080/realms/loyalty/.well-known/openid-configuration'
 ### Get Client Credentials Token
 
 **Prerequisite**
-- Setup Realm roles for `loyalty-partners` (all partners will have this role)
+- Setup Realm roles for `loyalty-partners` (all partners will have this role). [Guide](/backend/docs/keycloak-setup.md#assigning-a-role-to-a-client)
 - Grant permission to `create-transaction` to all users in `loyalty-partners` role.
-- Include `aud` in the `client_credentials` token (not included by default).
+- Include `aud` in the `client_credentials` token (not included by default). [Guide](/backend/docs/keycloak-setup.md#including-audience-in-the-client-credentials-access-token)
 
 **Request**
 
@@ -248,7 +247,7 @@ curl http://localhost:3000/api/v1/product
 ### Create Transaction
 
 **Prerequisite**
-- Grant permission to `create-transaction` to all users in `loyalty-partners` role.
+- Grant permission to `create-transaction` to all users in `loyalty-partners` role. [Guide](/backend/docs/keycloak-setup.md#assigning-scopes-to-roles)
 
 **Request**
 
@@ -261,6 +260,7 @@ curl -X POST --json '{"customerId":"003gL00000721XAQAY","date":"2025-07-09T00:00
 {
     "Id":"801gL00000DLfS5QAL"
 }
+```
 
 ---
 

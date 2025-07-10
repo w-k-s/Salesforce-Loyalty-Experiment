@@ -7,8 +7,11 @@ const { cache } = config;
 const client = createClient({
     url: cache.connection.url
 })
-client.on('error', err => console.log('Redis Client Error', err));
-await client.connect();
+
+if (!cache.useLocal) {
+    client.on('error', err => console.log('Redis Client Error', err));
+    await client.connect();
+}
 
 export const set = async (key: string, value: any, options: Options = { timeToLiveSeconds: 0 }): Promise<any> => {
     if (options.timeToLiveSeconds > 0) {
