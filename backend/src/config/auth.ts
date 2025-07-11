@@ -7,6 +7,7 @@ const identityConfig: IdentityProviderConfig = {
         clientId: process.env.AUTH_ADMIN_CLIENT_ID!!,
         clientSecret: process.env.AUTH_ADMIN_CLIENT_SECRET!!,
         issuerUrl: process.env.AUTH_ISSUER_URL!!,
+        jwksUri: process.env.AUTH_JWKS_URI,
         audience: process.env.AUTH_AUDIENCE
     },
     useLocal: process.env.USE_LOCAL_IDENTITY_PROVIDER == 'true' || false

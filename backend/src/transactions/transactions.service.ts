@@ -42,7 +42,9 @@ export const processOutOfOrderTransaction = async (messageContent, msg) => {
 }
 
 const updateTransaction = async (event: Transaction): Promise<Transaction | 'NOT_FOUND' | 'STALE'> => {
-    console.log(`updateTransaction: Event Received`, JSON.stringify(event))
+    console.log(`updateTransaction: Event Received`)
+    console.log(event)
+    console.log(`-------`)
 
     return db.transaction(async (trx) => {
         const result = await repo.findTransactionById(event.id)
@@ -69,6 +71,10 @@ const onTransactionSaved = async (transaction: Transaction) => {
     if (risk === 'high') {
         // raise case of suspicious transaction
     } else {
+        console.log(`onTransactionSaved: Publishing`)
+        console.log(transaction)
+        console.log(`----------------------------------`)
+
         await mqService.publishToExchange(
             mq.exchanges.TRANSACTIONS.name,
             'transaction.processed',

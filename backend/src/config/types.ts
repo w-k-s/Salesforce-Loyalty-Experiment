@@ -132,6 +132,7 @@ export interface IdentityProviderConnection {
     clientSecret: string
     tenant: string
     issuerUrl: string
+    jwksUri?: string
     audience?: string
 }
 

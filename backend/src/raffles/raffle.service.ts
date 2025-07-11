@@ -17,7 +17,9 @@ const RAFFLE_NAME = 'Win an iPhone';
  * - No tickets are issued on draw days (Sundays).
  */
 export const issueRaffleTickets = async (messageContent: Transaction, msg) => {
-    console.log(`issueRaffleTickets: Event Received`, JSON.stringify(event))
+    console.log(`issueRaffleTickets: Event Received`)
+    console.log(messageContent)
+    console.log('-----------')
 
     try {
         const { id: transactionId, totalAmount, customerId } = messageContent;
@@ -38,16 +40,17 @@ export const issueRaffleTickets = async (messageContent: Transaction, msg) => {
             modifiedDate: new Date()
         }
 
+        console.log({ 'message': 'raffle update', update })
+
         if (result === 'NOT_FOUND' && isRaffleTicketDay() && ticketsToAward > 0) {
-            saveRaffleTransaction(update)
-            console.log(
-                `${ticketsToAward} raffle ticket(s) awarded for Transaction '${transactionId}'`
-            );
+            await saveRaffleTransaction(update)
+            console.log({ 'message': 'raffle ticket(s) awarded', transactionId, ticketsToAward })
+
         } else if (result != 'NOT_FOUND' && result.raffleTickets !== ticketsToAward) {
-            console.log(
-                `Updating raffle tickets for Transaction '${transactionId}' to ${ticketsToAward}`
-            );
-            updateRaffleTransaction(update)
+            await updateRaffleTransaction(update)
+            console.log({ 'message': 'raffle ticket(s) updated', transactionId, ticketsToAward })
+        } else {
+            console.log({ message: 'No raffle update', result, isRaffleTicketDay: isRaffleTicketDay(), ticketsToAward })
         }
 
     } catch (e) {

@@ -5,13 +5,12 @@ import { Transaction, TransactionId } from '../loyalty/types.js'
 const tableName = 'transactions'
 
 export const saveTransaction = async (transaction: Transaction) => {
-    const { created_date, ...entity } = transactionToEntity(transaction)
-    return await db.insert(entity).into(tableName)
+    return db(tableName).insert(transactionToEntity(transaction))
 }
 
 export const updateTransaction = async (transaction: Transaction, trx?: Knex.Transaction) => {
     const entity = transactionToEntity(transaction)
-    let query = db.where({ id: transaction.id }).update(entity)
+    let query = db(tableName).where({ id: transaction.id }).update(entity)
     if (trx) {
         query = query.transacting(trx)
     }
@@ -22,16 +21,14 @@ export const findTransactionById = async (
     transactionId: TransactionId,
     forUpdate: boolean = false
 ): Promise<Transaction | 'NOT_FOUND'> => {
-    return await db.transaction(async (trx) => {
-        let projection = trx(tableName)
-            .where({ id: transactionId })
+    let query = db(tableName).where({ id: transactionId })
 
-        if (forUpdate) {
-            projection = projection.forUpdate()
-        }
-        let record = projection.first()
-        return record ? entityToTransaction(record) : 'NOT_FOUND'
-    })
+    if (forUpdate) {
+        query = query.forUpdate()
+    }
+
+    let record = await query.first()
+    return record ? entityToTransaction(record) : 'NOT_FOUND'
 }
 
 const entityToTransaction = (entity): Transaction => {
