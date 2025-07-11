@@ -61,21 +61,29 @@ class MQService {
             for (const [key, queue] of Object.entries(mq.queues)) {
                 await this.channel.assertQueue(queue.name, queue.options);
                 console.log(`Queue '${queue.name}' created/verified`);
+
+                if (queue.bindings && queue.bindings.length > 0) {
+                    for (const binding of queue.bindings) {
+                        await this.channel.bindQueue(
+                            queue.name,
+                            binding.exchange,
+                            binding.routingKey
+                        );
+                        console.log(`Queue '${queue.name}' bound to exchange '${binding.exchange}' with routing key '${binding.routingKey}'`);
+                    }
+                }
+
+                const { arguments: args } = queue.options
+                if (args) {
+                    const dlxName = args['x-dead-letter-exchange']
+                    const dlxRoutingKey = args['x-dead-letter-routing-key']
+
+                    const failedQueueName = `failed.${queue.name}`
+                    await this.channel.assertExchange(dlxName, 'direct', { durable: true });
+                    await this.channel.assertQueue(failedQueueName, { durable: true });
+                    await this.channel.bindQueue(failedQueueName, dlxName, dlxRoutingKey);
+                }
             }
-
-            // Setup dead letter exchange for failed messages
-            await this.channel.assertExchange('dlx.transactions', 'direct', { durable: true });
-            await this.channel.assertQueue('failed.transactions', { durable: true });
-            await this.channel.bindQueue('failed.transactions', 'dlx.transactions', 'failed.transactions');
-
-            // Optional: Bind queues to exchanges if both exist
-            // if (config.exchanges && config.exchanges.NOTIFICATIONS) {
-            //     await this.channel.bindQueue(
-            //         config.queues.USER_NOTIFICATIONS.name,
-            //         config.exchanges.NOTIFICATIONS.name,
-            //         'user.*'
-            //     );
-            // }
 
         } catch (error) {
             console.error('Failed to setup RabbitMQ infrastructure:', error);

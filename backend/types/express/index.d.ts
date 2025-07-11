@@ -1,15 +1,14 @@
-
-interface AuthPayload {
-    customerId: string
-    realm_access?: { roles: string[] }
-}
+import 'express';
 
 declare global {
     namespace Express {
-        interface Request {
-            user?: {
-                id: string
-            }
+        interface User {
+            id: string;
+        }
+
+
+        export interface Request {
+            user?: User
         }
     }
 }

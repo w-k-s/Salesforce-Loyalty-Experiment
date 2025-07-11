@@ -1,77 +1,37 @@
+import { Knex } from 'knex'
 import db from '../db/index.js'
+import { Transaction, TransactionId } from '../loyalty/types.js'
 
 const tableName = 'transactions'
 
-export const findTransactionById = async (transactionId: string) => {
-    const result = await db.select('id', 'order_number', 'description', 'total_amount', 'effective_date', 'customer_id', 'status', 'created_date', 'modified_date')
-        .from(tableName)
-        .where('id', transactionId)
-        .limit(1)
-
-    if (result.length == 0) {
-        return null
-    }
-
-    return entityToTransaction(result[0]);
+export const saveTransaction = async (transaction: Transaction) => {
+    return db(tableName).insert(transactionToEntity(transaction))
 }
 
-export const saveTransaction = async (transaction) => {
-    const entity = {
-        id: transaction.id,
-        order_number: transaction.orderNumber,
-        description: transaction.description,
-        total_amount: transaction.totalAmount,
-        effective_date: transaction.effectiveDate,
-        customer_id: transaction.customerId,
-        status: transaction.status,
-        created_date: transaction.createdDate,
-        modified_date: transaction.modifiedDate
+export const updateTransaction = async (transaction: Transaction, trx?: Knex.Transaction) => {
+    const entity = transactionToEntity(transaction)
+    let query = db(tableName).where({ id: transaction.id }).update(entity)
+    if (trx) {
+        query = query.transacting(trx)
     }
-
-    return await db.insert(entity).into(tableName)
+    return await query
 }
 
-// TODO: have this code reviewed
-export const updateTransaction = async (newTransaction, conditionFn) => {
-    let result = false
-    await db.transaction(async (trx) => {
-        return db(tableName)
-            .transacting(trx)
-            .forUpdate()
-            .select('id', 'order_number', 'description', 'total_amount', 'effective_date', 'customer_id', 'status', 'created_date', 'modified_date')
-            .where('id', newTransaction.id)
-            .limit(1)
-            .then((records) => {
-                if (records.length === 0) {
-                    throw new Error("record not found")
-                }
-                return records[0]
-            })
-            .then((record) => entityToTransaction(record))
-            .then((oldTransaction) => {
-                const proceed = oldTransaction !== null && (!conditionFn || conditionFn(oldTransaction));
-                if (!proceed) {
-                    throw new Error("stale update")
-                }
-                return db(tableName)
-                    .transacting(trx)
-                    .where('id', '=', oldTransaction.id)
-                    .update({
-                        total_amount: newTransaction.totalAmount,
-                        modified_date: newTransaction.modifiedDate,
-                    })
-                    .then(trx.commit)
-                    .then(() => result = true)
-            }).catch((err) => {
-                console.log("Failed to update", err)
-                result = false
-            })
-    });
-    return result
-};
+export const findTransactionById = async (
+    transactionId: TransactionId,
+    forUpdate: boolean = false
+): Promise<Transaction | 'NOT_FOUND'> => {
+    let query = db(tableName).where({ id: transactionId })
 
+    if (forUpdate) {
+        query = query.forUpdate()
+    }
 
-const entityToTransaction = (entity) => {
+    let record = await query.first()
+    return record ? entityToTransaction(record) : 'NOT_FOUND'
+}
+
+const entityToTransaction = (entity): Transaction => {
     return {
         id: entity.id,
         orderNumber: entity.order_number,
@@ -82,5 +42,19 @@ const entityToTransaction = (entity) => {
         status: entity.status,
         createdDate: entity.created_date,
         modifiedDate: entity.modified_date,
+    }
+}
+
+const transactionToEntity = (transaction: Transaction) => {
+    return {
+        id: transaction.id,
+        order_number: transaction.orderNumber,
+        description: transaction.description,
+        total_amount: transaction.totalAmount,
+        effective_date: transaction.effectiveDate,
+        customer_id: transaction.customerId,
+        status: transaction.status,
+        created_date: transaction.createdDate,
+        modified_date: transaction.modifiedDate
     }
 }

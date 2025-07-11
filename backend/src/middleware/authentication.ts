@@ -1,3 +1,4 @@
+import { RequestHandler } from "express";
 import config from "../config/index.js";
 import { claimCheck } from 'express-oauth2-jwt-bearer'
 import auth, { type User } from '../auth/index.js'
@@ -5,7 +6,8 @@ import { auth as oauth2 } from 'express-oauth2-jwt-bearer'
 
 const oauth2Middleware = oauth2({
     issuerBaseURL: config.auth.connection.issuerUrl,
-    audience: config.auth.connection.audience
+    audience: config.auth.connection.audience,
+    jwksUri: config.auth.connection.jwksUri
 })
 
 const { getUserByUsername } = auth
@@ -44,21 +46,29 @@ const localAuthentication = (requiredScopes: string[] = []) => {
 }
 
 
-const remoteAuthentication = (requiredScopes: string[] = []) => {
-    return [
-        oauth2Middleware,
-        (req, res, next) => {
-            claimCheck((claims) => {
-                const roles = (claims.realm_access as any).roles || []
-                return requiredScopes.every(scope => roles.includes(scope));
-            })
+export const remoteAuthentication = (requiredScopes: string[] = []): RequestHandler => {
+    return (req, res, next) => {
+        oauth2Middleware(req, res, (err) => {
+            if (err) return next(err);
 
-            const { payload } = req.auth
-            req.user = {}
-            req.user.id = payload.customerId
-            next()
-        }
-    ]
-}
+            const checker = claimCheck((claims) => {
+                const roles = (claims.realm_access as any)?.roles || [];
+                const passed = requiredScopes.every(scope => roles.includes(scope));
+                return passed;
+            });
+
+            checker(req, res, (err) => {
+                if (err) return next({ statusCode: 403, message: "Forbidden." });
+
+                if (req.auth) {
+                    const { payload } = req.auth;
+                    req.user = { id: payload.customerId as string };
+                }
+
+                next();
+            });
+        });
+    };
+};
 
 export const requiresAuthentication = config.auth.useLocal ? localAuthentication : remoteAuthentication;

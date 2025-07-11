@@ -43,6 +43,18 @@ export interface CreateTransactionJournal {
     products: CreateTransactionProductLine[]
 }
 
+export interface Transaction {
+    id: TransactionId
+    customerId: string
+    orderNumber: string
+    description: string
+    totalAmount: string
+    status: string
+    effectiveDate: Date
+    createdDate: Date
+    modifiedDate: Date
+}
+
 export type ContactId = string
 export type TransactionId = string
 export type ProductId = string
